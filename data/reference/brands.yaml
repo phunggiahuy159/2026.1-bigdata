@@ -1,0 +1,358 @@
+# Danh mục thương hiệu Việt Nam bị mạo danh (v1, P3).
+# Quy ước:
+#   brand_id          khoá duy nhất, chữ thường [a-z0-9_]
+#   name              tên hiển thị
+#   category          bank | ewallet | ecommerce | telecom | gov | logistics
+#   official_domains  CHỈ domain chính thức (eTLD+1). Không bao giờ ghi domain lừa đảo.
+#   keywords          chuỗi dùng để so khớp/khoảng cách chỉnh sửa trong tên miền (không dấu, thường)
+#   aliases           biến thể viết tắt / cách gọi thông dụng
+#   verified          false = domain/từ khoá soạn từ kiến thức sẵn có, CHƯA kiểm lại
+#                     (không fetch site theo luật nhóm); true khi đã đối chiếu nguồn công khai
+#   note              chỗ chưa chắc cần người kiểm
+version: 1
+brands:
+  # ---- Ngân hàng ----
+  - brand_id: vietcombank
+    name: Vietcombank
+    category: bank
+    official_domains: [vietcombank.com.vn, vietcombank.com]
+    keywords: [vietcombank, vcb, digibank]
+    aliases: [vcb]
+    verified: false
+  - brand_id: vietinbank
+    name: VietinBank
+    category: bank
+    official_domains: [vietinbank.vn]
+    keywords: [vietinbank, ipay]
+    aliases: [ctg, vtb]
+    verified: false
+    note: "vietinbank.com.vn có thể là domain cũ/phụ; cần kiểm"
+  - brand_id: bidv
+    name: BIDV
+    category: bank
+    official_domains: [bidv.com.vn, bidv.vn]
+    keywords: [bidv, smartbanking]
+    aliases: [bidv]
+    verified: false
+    note: "bidv.vn chưa chắc là domain chính thức"
+  - brand_id: agribank
+    name: Agribank
+    category: bank
+    official_domains: [agribank.com.vn]
+    keywords: [agribank, ebanking]
+    aliases: [vbard]
+    verified: false
+  - brand_id: techcombank
+    name: Techcombank
+    category: bank
+    official_domains: [techcombank.com, techcombank.com.vn]
+    keywords: [techcombank, tcb]
+    aliases: [tcb]
+    verified: false
+  - brand_id: mbbank
+    name: MB Bank
+    category: bank
+    official_domains: [mbbank.com.vn]
+    keywords: [mbbank, mbbankvn, militarybank]
+    aliases: [mb, mbb]
+    verified: false
+  - brand_id: acb
+    name: ACB
+    category: bank
+    official_domains: [acb.com.vn]
+    keywords: [acb, acbonline]
+    aliases: [acb]
+    verified: false
+  - brand_id: vpbank
+    name: VPBank
+    category: bank
+    official_domains: [vpbank.com.vn]
+    keywords: [vpbank, vpbankneo]
+    aliases: [vpb]
+    verified: false
+  - brand_id: tpbank
+    name: TPBank
+    category: bank
+    official_domains: [tpb.vn, tpbank.com.vn]
+    keywords: [tpbank, tpb]
+    aliases: [tpb]
+    verified: false
+  - brand_id: sacombank
+    name: Sacombank
+    category: bank
+    official_domains: [sacombank.com.vn]
+    keywords: [sacombank, stb]
+    aliases: [stb]
+    verified: false
+  - brand_id: hdbank
+    name: HDBank
+    category: bank
+    official_domains: [hdbank.com.vn]
+    keywords: [hdbank]
+    aliases: [hdb]
+    verified: false
+  - brand_id: vib
+    name: VIB
+    category: bank
+    official_domains: [vib.com.vn]
+    keywords: [vib, myvib]
+    aliases: [vib]
+    verified: false
+  - brand_id: shb
+    name: SHB
+    category: bank
+    official_domains: [shb.com.vn]
+    keywords: [shb]
+    aliases: [shb]
+    verified: false
+  - brand_id: ocb
+    name: OCB
+    category: bank
+    official_domains: [ocb.com.vn]
+    keywords: [ocb, ocbomni]
+    aliases: [ocb]
+    verified: false
+  - brand_id: msb
+    name: MSB
+    category: bank
+    official_domains: [msb.com.vn]
+    keywords: [msb, maritimebank]
+    aliases: [msb]
+    verified: false
+  - brand_id: eximbank
+    name: Eximbank
+    category: bank
+    official_domains: [eximbank.com.vn]
+    keywords: [eximbank, exim]
+    aliases: [eib]
+    verified: false
+  - brand_id: scb
+    name: SCB
+    category: bank
+    official_domains: [scb.com.vn]
+    keywords: [scb]
+    aliases: [scb]
+    verified: false
+  - brand_id: seabank
+    name: SeABank
+    category: bank
+    official_domains: [seabank.com.vn]
+    keywords: [seabank]
+    aliases: [seab]
+    verified: false
+
+  # ---- Ví điện tử / thanh toán ----
+  - brand_id: momo
+    name: MoMo
+    category: ewallet
+    official_domains: [momo.vn]
+    keywords: [momo, vimomo]
+    aliases: [momo]
+    verified: false
+  - brand_id: zalopay
+    name: ZaloPay
+    category: ewallet
+    official_domains: [zalopay.vn]
+    keywords: [zalopay, zalo]
+    aliases: [zlp]
+    verified: false
+    note: "zalo.me là của Zalo (nhắn tin), không phải ZaloPay; cần quyết có gộp không"
+  - brand_id: viettelmoney
+    name: Viettel Money
+    category: ewallet
+    official_domains: [viettelmoney.vn]
+    keywords: [viettelmoney, viettelpay]
+    aliases: [vtmoney]
+    verified: false
+    note: "tên cũ Viettel Pay; domain cần kiểm"
+  - brand_id: shopeepay
+    name: ShopeePay
+    category: ewallet
+    official_domains: [shopeepay.vn]
+    keywords: [shopeepay, airpay]
+    aliases: [spay]
+    verified: false
+  - brand_id: vnpay
+    name: VNPAY
+    category: ewallet
+    official_domains: [vnpay.vn]
+    keywords: [vnpay, vnpayqr]
+    aliases: [vnpay]
+    verified: false
+
+  # ---- Sàn thương mại điện tử ----
+  - brand_id: shopee
+    name: Shopee
+    category: ecommerce
+    official_domains: [shopee.vn]
+    keywords: [shopee, shopeevn]
+    aliases: [shopee]
+    verified: false
+  - brand_id: lazada
+    name: Lazada
+    category: ecommerce
+    official_domains: [lazada.vn]
+    keywords: [lazada, lazadavn]
+    aliases: [laz]
+    verified: false
+  - brand_id: tiki
+    name: Tiki
+    category: ecommerce
+    official_domains: [tiki.vn]
+    keywords: [tiki, tikivn]
+    aliases: [tiki]
+    verified: false
+  - brand_id: sendo
+    name: Sendo
+    category: ecommerce
+    official_domains: [sendo.vn]
+    keywords: [sendo]
+    aliases: [sendo]
+    verified: false
+  - brand_id: tiktokshop
+    name: TikTok Shop
+    category: ecommerce
+    official_domains: [tiktok.com]
+    keywords: [tiktok, tiktokshop]
+    aliases: [ttshop]
+    verified: false
+    note: "chưa chắc domain Shop VN riêng (shop.tiktok.com là subdomain của tiktok.com)"
+
+  # ---- Nhà mạng / viễn thông ----
+  - brand_id: viettel
+    name: Viettel
+    category: telecom
+    official_domains: [viettel.vn, viettel.com.vn]
+    keywords: [viettel, viettelvn, myviettel]
+    aliases: [vtl]
+    verified: false
+  - brand_id: vinaphone
+    name: VinaPhone
+    category: telecom
+    official_domains: [vinaphone.com.vn]
+    keywords: [vinaphone, vnpt]
+    aliases: [vnpt, vina]
+    verified: false
+    note: "vnpt.vn / vnpt.com.vn thuộc tập đoàn VNPT, cần quyết có thêm vào không"
+  - brand_id: mobifone
+    name: MobiFone
+    category: telecom
+    official_domains: [mobifone.vn]
+    keywords: [mobifone]
+    aliases: [mobi]
+    verified: false
+  - brand_id: vietnamobile
+    name: Vietnamobile
+    category: telecom
+    official_domains: [vietnamobile.com.vn]
+    keywords: [vietnamobile]
+    aliases: [vnmb]
+    verified: false
+  - brand_id: fpt
+    name: FPT Telecom
+    category: telecom
+    official_domains: [fpt.com.vn, fpt.vn]
+    keywords: [fpt, fpttelecom]
+    aliases: [fpt]
+    verified: false
+    note: "fpt.vn chưa chắc"
+
+  # ---- Dịch vụ công / cơ quan nhà nước ----
+  - brand_id: vneid
+    name: VNeID (định danh điện tử)
+    category: gov
+    official_domains: [vneid.gov.vn]
+    keywords: [vneid, dinhdanh, dinhdanhdientu]
+    aliases: [vneid]
+    verified: false
+  - brand_id: thue
+    name: Tổng cục Thuế (thuế điện tử)
+    category: gov
+    official_domains: [gdt.gov.vn]
+    keywords: [gdt, thue, thuedientu, hoantienthue]
+    aliases: [tct]
+    verified: false
+    note: "thuedientu.gdt.gov.vn là subdomain; mô hình eTLD+1 của gov.vn là gdt.gov.vn"
+  - brand_id: bhxh
+    name: Bảo hiểm xã hội Việt Nam
+    category: gov
+    official_domains: [baohiemxahoi.gov.vn, vssid.vn]
+    keywords: [bhxh, baohiemxahoi, vssid, baohiem]
+    aliases: [bhxh, vss]
+    verified: false
+    note: "vssid.vn cần kiểm có phải domain chính thức của ứng dụng VssID"
+  - brand_id: dichvucong
+    name: Cổng dịch vụ công quốc gia
+    category: gov
+    official_domains: [dichvucong.gov.vn]
+    keywords: [dichvucong, dvc]
+    aliases: [dvcqg]
+    verified: false
+  - brand_id: csgt
+    name: Cục CSGT (phạt nguội)
+    category: gov
+    official_domains: [csgt.vn]
+    keywords: [csgt, phatnguoi, tracuuphat]
+    aliases: [csgt]
+    verified: false
+    note: "csgt.vn là cổng tra cứu phạt nguội; cần kiểm"
+  - brand_id: evn
+    name: EVN (điện lực)
+    category: gov
+    official_domains: [evn.com.vn]
+    keywords: [evn, tiendien, evnhanoi, evnspc, evnhcmc]
+    aliases: [evn]
+    verified: false
+    note: "EVN là DN nhà nước, xếp gov tạm"
+
+  # ---- Giao vận ----
+  - brand_id: ghn
+    name: Giao Hàng Nhanh
+    category: logistics
+    official_domains: [ghn.vn]
+    keywords: [ghn, giaohangnhanh]
+    aliases: [ghn]
+    verified: false
+  - brand_id: ghtk
+    name: Giao Hàng Tiết Kiệm
+    category: logistics
+    official_domains: [giaohangtietkiem.vn, ghtk.vn]
+    keywords: [ghtk, giaohangtietkiem]
+    aliases: [ghtk]
+    verified: false
+  - brand_id: viettelpost
+    name: Viettel Post
+    category: logistics
+    official_domains: [viettelpost.vn, viettelpost.com.vn]
+    keywords: [viettelpost, vtp]
+    aliases: [vtp]
+    verified: false
+  - brand_id: vnpost
+    name: Bưu điện Việt Nam (VNPost)
+    category: logistics
+    official_domains: [vnpost.vn]
+    keywords: [vnpost, buudien]
+    aliases: [vnpost]
+    verified: false
+  - brand_id: jtexpress
+    name: J&T Express
+    category: logistics
+    official_domains: [jtexpress.vn]
+    keywords: [jtexpress, jandt]
+    aliases: [jnt]
+    verified: false
+  - brand_id: spx
+    name: SPX Express
+    category: logistics
+    official_domains: [spx.vn]
+    keywords: [spx, spxexpress, shopeeexpress]
+    aliases: [spx]
+    verified: false
+  - brand_id: ninjavan
+    name: Ninja Van
+    category: logistics
+    official_domains: [ninjavan.co]
+    keywords: [ninjavan]
+    aliases: [nv]
+    verified: false
+    note: "ninjavan.co hay ninjavan.vn? cần kiểm"
