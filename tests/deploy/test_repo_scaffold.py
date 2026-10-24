@@ -1,6 +1,5 @@
 """Kiểm tra khung repo: .env.example chỉ có giá trị giả, CI/pre-commit đủ bước bắt buộc."""
 
-import shutil
 import subprocess
 import sys
 import tomllib
@@ -72,14 +71,17 @@ def test_workspace_members_are_explicit_and_have_pyproject():
 
 
 def test_new_directory_without_pyproject_does_not_break_uv(tmp_path):
-    for name in ("pyproject.toml", "uv.lock", "README.md"):
-        shutil.copy(ROOT / name, tmp_path / name)
-    for module in ("labeling", "jobs/batch_ml", "libs/scamradar_core"):
-        (tmp_path / module).mkdir(parents=True)
-    result = subprocess.run(
-        ["uv", "lock", "--check"], cwd=tmp_path, capture_output=True, text=True, check=False
+    # Workspace tạm độc lập với members thật của repo: tên thư mục giả, không lockfile sẵn.
+    (tmp_path / "pyproject.toml").write_text(
+        '[project]\nname = "scaffold-check"\nversion = "0"\nrequires-python = ">=3.11"\n'
+        "dependencies = []\n\n[tool.uv]\npackage = false\n\n"
+        "[tool.uv.workspace]\nmembers = []\n"
     )
-    assert result.returncode == 0, result.stderr
+    for directory in ("zz_module_a", "zz_jobs/zz_module_b"):
+        (tmp_path / directory).mkdir(parents=True)
+    for command in (["uv", "lock"], ["uv", "lock", "--check"]):
+        result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, check=False)
+        assert result.returncode == 0, result.stderr
 
 
 def test_pytest_pythonpath_lets_tests_import_module_packages(tmp_path):
