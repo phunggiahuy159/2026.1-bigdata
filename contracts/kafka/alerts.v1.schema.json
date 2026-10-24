@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alerts.v1.schema.json",
+  "title": "alerts.v1",
+  "description": "Một cảnh báo domain nghi mạo danh thương hiệu. Kafka key = domain gốc (eTLD+1, ASCII punycode), trùng trường `domain`. 3 partition, giữ 7 ngày, nén zstd. Ghi: P3 (jobs/stream_detect), chỉ khi domain mới hoặc điểm tăng. Đọc: P2 (enrichment), P5. Giao nhận at-least-once: người đọc khử trùng theo (domain, alert_ts). Tên trường khớp contracts/mongodb/alerts.schema.json.",
+  "type": "object",
+  "required": [
+    "domain",
+    "score",
+    "reasons",
+    "alert_ts",
+    "alert_type",
+    "first_seen_ts",
+    "cert_count",
+    "rule_version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "maxLength": 253,
+      "description": "Domain gốc eTLD+1, ASCII punycode (xn--...), viết thường; trùng Kafka key và registered_domain ở Iceberg."
+    },
+    "brand_id": {
+      "type": ["string", "null"],
+      "description": "brand_id trong data/reference/brands.yaml; null nếu cảnh báo không gắn thương hiệu."
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Điểm nghi vấn 0-100 tại thời điểm phát."
+    },
+    "reasons": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Lý do tạo nên điểm, ví dụ brand_typo:momo:d1, risky_tld:top."
+    },
+    "alert_type": {
+      "type": "string",
+      "enum": ["new_domain", "score_increase"],
+      "description": "new_domain: lần đầu phát cho domain; score_increase: điểm cao hơn lần phát trước."
+    },
+    "prev_score": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Điểm của lần phát trước; null khi alert_type = new_domain."
+    },
+    "fqdn": {
+      "type": ["string", "null"],
+      "description": "Tên đầy đủ trong chứng chỉ gây ra cảnh báo, ASCII punycode."
+    },
+    "sha256": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 của chứng chỉ gây ra cảnh báo (ct.raw.sha256)."
+    },
+    "alert_ts": {
+      "type": "integer",
+      "description": "Thời điểm phát, UTC mili giây từ epoch."
+    },
+    "first_seen_ts": {
+      "type": "integer",
+      "description": "Lần đầu thấy domain trong luồng, UTC mili giây (ct.raw.seen_ts nhỏ nhất)."
+    },
+    "cert_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Số chứng chỉ (đã khử trùng sha256) của domain tính đến lúc phát."
+    },
+    "rule_version": {
+      "type": "string",
+      "description": "Phiên bản luật/mô hình chấm điểm (scamradar_core hoặc PipelineModel)."
+    }
+  }
+}
