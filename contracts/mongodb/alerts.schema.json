@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alerts.schema.json",
+  "title": "alerts",
+  "description": "Bản sao cảnh báo từ topic alerts.v1, do P3 ghi (sink idempotent theo _id). Bất biến sau khi ghi. Trường lấy theo alerts.v1; khi P3 chốt contracts/kafka/alerts.v1 thì đối chiếu lại tên trường. JSON Schema ở đây là tài liệu, không dùng trực tiếp làm validator MongoDB; kiểu BSON nằm ở `x-bsonType` (xem README).",
+  "type": "object",
+  "required": [
+    "_id",
+    "domain",
+    "score",
+    "reasons",
+    "alert_ts",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "`{domain}|{alert_ts}`; ghi lại cùng cảnh báo thì ghi đè cùng document"
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "maxLength": 253,
+      "description": "domain gốc eTLD+1, ASCII punycode; trùng key Kafka alerts.v1"
+    },
+    "brand_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "x-bsonType": "int"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fqdn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "tên đầy đủ trong chứng chỉ, ASCII punycode"
+    },
+    "alert_ts": {
+      "type": "integer",
+      "description": "UTC, mili giây, thời điểm phát",
+      "x-bsonType": "long"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "x-bsonType": "date",
+      "description": "UTC. Phải ghi là BSON Date (không phải chuỗi), vì TTL index chỉ hết hạn document khi trường là Date. P3 ghi cùng lúc với alert_ts (created_at = Date(alert_ts))"
+    }
+  }
+}

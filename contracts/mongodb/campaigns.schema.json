@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "campaigns.schema.json",
+  "title": "campaigns",
+  "description": "Chiến dịch do P5 ghi từ bản mới nhất của gold.campaigns (P4); tên trường theo bảng đó. Ghi lại bằng replace theo _id. JSON Schema ở đây là tài liệu, không dùng trực tiếp làm validator MongoDB; kiểu BSON nằm ở `x-bsonType` (xem README).",
+  "type": "object",
+  "required": [
+    "_id",
+    "run_date",
+    "domain_count",
+    "domains"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "campaign_id của gold.campaigns"
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date",
+      "description": "ngày chạy job đồ thị (UTC)"
+    },
+    "domain_count": {
+      "type": "integer",
+      "minimum": 1,
+      "x-bsonType": "int"
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+        "maxLength": 253
+      },
+      "description": "registered_domain thuộc chiến dịch"
+    },
+    "brands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "brand_id bị mạo danh"
+    },
+    "shared_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "shared_nameservers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "asns": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "x-bsonType": "int"
+      }
+    },
+    "hub_node": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hub_rank": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "x-bsonType": "double"
+    },
+    "first_seen_ts": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "UTC, mili giây",
+      "x-bsonType": "long"
+    },
+    "last_seen_ts": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "UTC, mili giây",
+      "x-bsonType": "long"
+    }
+  }
+}

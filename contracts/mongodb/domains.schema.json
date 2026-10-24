@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "domains.schema.json",
+  "title": "domains",
+  "description": "Một document cho mỗi domain gốc (eTLD+1). Trường `speed` và `brand_id` do P3 ghi, `batch` do P5 ghi; điểm batch ghi đè điểm speed khi có (xem README.md). Đọc: P5 (Streamlit). JSON Schema ở đây là tài liệu, không dùng trực tiếp làm validator MongoDB; kiểu BSON nằm ở `x-bsonType` (xem README).",
+  "type": "object",
+  "required": [
+    "_id"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "maxLength": 253,
+      "description": "domain gốc eTLD+1, ASCII punycode (xn--...), viết thường; trùng registered_domain của các bảng Iceberg"
+    },
+    "brand_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "brand_id trong data/reference/brands.yaml; P3 ghi cùng speed"
+    },
+    "speed": {
+      "type": "object",
+      "description": "P3 ghi bằng $set cả khối `speed` mỗi lần cập nhật; trường không còn giá trị thì bỏ khỏi khối mới (khối mới thay hẳn khối cũ)",
+      "required": [
+        "score",
+        "reasons",
+        "updated_ts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "x-bsonType": "int"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "first_seen_ts": {
+          "type": "integer",
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
+        },
+        "last_seen_ts": {
+          "type": "integer",
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
+        },
+        "cert_count": {
+          "type": "integer",
+          "minimum": 0,
+          "x-bsonType": "int"
+        },
+        "rule_version": {
+          "type": "string"
+        },
+        "updated_ts": {
+          "type": "integer",
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
+        }
+      }
+    },
+    "batch": {
+      "type": "object",
+      "description": "P5 ghi (job chấm điểm hằng ngày) bằng $set cả khối `batch` mỗi lần chấm (campaign_id và anomaly_cluster luôn có mặt, null nếu không có); trường score_date, score, reasons, model_version, scored_ts lấy từ gold.domain_scores, enrichment từ silver.enrichment, campaign_id từ gold.campaigns",
+      "required": [
+        "score_date",
+        "score",
+        "reasons",
+        "model_version",
+        "scored_ts",
+        "campaign_id",
+        "anomaly_cluster"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "score_date": {
+          "type": "string",
+          "format": "date",
+          "description": "ngày chấm (UTC), như gold.domain_scores.score_date"
+        },
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "x-bsonType": "int"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "model_version": {
+          "type": "string",
+          "description": "phiên bản PipelineModel trong models/ trên MinIO"
+        },
+        "scored_ts": {
+          "type": "integer",
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
+        },
+        "campaign_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "khoá sang campaigns._id"
+        },
+        "anomaly_cluster": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "cụm KMeans cho domain chưa có nhãn",
+          "x-bsonType": "int"
+        },
+        "enrichment": {
+          "type": "object",
+          "description": "bản mới nhất của silver.enrichment; asn, asn_org, country là mảng song song với concat(a_records, aaaa_records), phần tử null nếu IP không tra được",
+          "additionalProperties": false,
+          "properties": {
+            "lookup_ts": {
+              "type": "integer",
+              "description": "UTC, mili giây",
+              "x-bsonType": "long"
+            },
+            "a_records": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "aaaa_records": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "ns_records": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "asn": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "x-bsonType": "int"
+              }
+            },
+            "asn_org": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "country": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[A-Z]{2}$"
+              }
+            },
+            "dns_status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
