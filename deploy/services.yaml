@@ -1,0 +1,138 @@
+# Nguồn số liệu duy nhất cho phiên bản và tài nguyên dịch vụ nền tảng; deploy/README.md tóm tắt
+# từ file này, tests/deploy/test_services.py kiểm tra ghim phiên bản và tổng tài nguyên.
+# Đơn vị: cpu theo millicore, memory theo MiB, disk theo GiB. `images_checked: true` nghĩa là
+# đã kiểm manifest từng image còn kéo được; `resources_source` là `values` (đã đặt trong
+# deploy/<dịch vụ>/) hoặc `estimate` (ước lượng, chốt khi tới tuần cài).
+machine:
+  threads: 12
+  memory_mib: 30720
+  # phần cho OS, kind và đệm trước khi chia cho dịch vụ
+  reserved_mib: 4096
+
+services:
+  - name: strimzi-operator
+    week: 1
+    namespace: kafka
+    chart: {repo: https://strimzi.io/charts/, name: strimzi-kafka-operator, version: 1.3.0}
+    images: [quay.io/strimzi/operator:1.3.0]
+    values: deploy/kafka/strimzi-operator-values.yaml
+    requests: {cpu: 200, memory: 384}
+    limits: {cpu: 1000, memory: 384}
+    disk_gib: 0
+    images_checked: true
+    resources_source: values
+
+  - name: kafka
+    week: 1
+    namespace: kafka
+    chart: null
+    manifest: deploy/kafka/kafka-cluster.yaml
+    images:
+      - quay.io/strimzi/kafka:1.3.0-kafka-4.2.2
+      - quay.io/strimzi/operator:1.3.0
+    requests: {cpu: 1100, memory: 3328}
+    limits: {cpu: 2500, memory: 3328}
+    disk_gib: 60
+    images_checked: true
+    resources_source: values
+
+  - name: minio
+    week: 1
+    namespace: minio
+    chart: {repo: https://charts.min.io/, name: minio, version: 5.4.0}
+    images:
+      - docker.io/pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+      - docker.io/pgsty/mc:RELEASE.2026-10-18T00-00-00Z
+    values: deploy/minio/values.yaml
+    requests: {cpu: 250, memory: 1024}
+    limits: {cpu: 1000, memory: 2048}
+    disk_gib: 150
+    images_checked: true
+    resources_source: values
+
+  - name: iceberg-catalog
+    week: 1
+    namespace: iceberg
+    chart: {repo: https://lakekeeper.github.io/lakekeeper-charts/, name: lakekeeper, version: 0.12.0}
+    images:
+      - quay.io/lakekeeper/catalog:v0.13.3
+      - docker.io/postgres:18.6
+    values: deploy/iceberg-catalog/values.yaml
+    requests: {cpu: 200, memory: 512}
+    limits: {cpu: 1000, memory: 1024}
+    disk_gib: 5
+    images_checked: true
+    resources_source: values
+
+  - name: mongodb
+    week: 2
+    namespace: data
+    chart: {repo: https://groundhog2k.github.io/helm-charts/, name: mongodb, version: 0.8.4}
+    images: [docker.io/mongo:8.3.13]
+    requests: {cpu: 250, memory: 1024}
+    limits: {cpu: 1000, memory: 1536}
+    disk_gib: 20
+    images_checked: true
+    resources_source: estimate
+
+  - name: redis
+    week: 2
+    namespace: data
+    chart: {repo: https://groundhog2k.github.io/helm-charts/, name: redis, version: 2.4.8}
+    images: [docker.io/redis:8.10.2]
+    requests: {cpu: 100, memory: 256}
+    limits: {cpu: 500, memory: 512}
+    disk_gib: 2
+    images_checked: true
+    resources_source: estimate
+
+  - name: spark-operator
+    week: 2
+    namespace: spark
+    chart: {repo: https://kubeflow.github.io/spark-operator, name: spark-operator, version: 2.5.2}
+    images: [ghcr.io/kubeflow/spark-operator/controller:2.5.2]
+    requests: {cpu: 200, memory: 512}
+    limits: {cpu: 1000, memory: 1024}
+    disk_gib: 0
+    images_checked: true
+    resources_source: estimate
+
+  - name: airflow
+    week: 3
+    namespace: orchestration
+    chart: {repo: https://airflow.apache.org, name: airflow, version: 1.22.0}
+    # chart kèm PostgreSQL của Bitnami (bitnamilegacy, đóng băng): tắt, dùng PostgreSQL chính thức
+    images: [docker.io/apache/airflow:3.2.2, docker.io/postgres:18.6]
+    requests: {cpu: 1100, memory: 4096}
+    limits: {cpu: 3000, memory: 5632}
+    disk_gib: 5
+    images_checked: true
+    resources_source: estimate
+
+  - name: trino
+    week: 3
+    namespace: query
+    chart: {repo: https://trinodb.github.io/charts, name: trino, version: 1.45.0}
+    images: [docker.io/trinodb/trino:484]
+    requests: {cpu: 1000, memory: 4096}
+    limits: {cpu: 2000, memory: 5120}
+    disk_gib: 0
+    images_checked: true
+    resources_source: estimate
+
+  - name: kube-prometheus-stack
+    week: 3
+    namespace: monitoring
+    chart: {repo: https://prometheus-community.github.io/helm-charts, name: kube-prometheus-stack, version: 92.13.1}
+    images:
+      - quay.io/prometheus/prometheus:v3.15.0-distroless
+      - quay.io/prometheus/alertmanager:v0.34.1
+      - quay.io/prometheus-operator/prometheus-operator:v0.94.1
+      - docker.io/grafana/grafana:13.2.4-distroless
+      - quay.io/prometheus/node-exporter:v1.12.1-distroless
+      - registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0
+    requests: {cpu: 850, memory: 2080}
+    limits: {cpu: 2600, memory: 3136}
+    disk_gib: 10
+    images_checked: true
+    resources_source: estimate
