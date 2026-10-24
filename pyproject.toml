@@ -1,0 +1,40 @@
+[project]
+name = "scamradar"
+version = "0.1.0"
+description = "ScamRadar VN: real-time detection of phishing websites impersonating Vietnamese brands"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+# Gốc workspace chỉ giữ công cụ dev chung. Mỗi vai khai báo dependency của module
+# mình trong pyproject.toml riêng ở thư mục module (xem docs/onboarding.md).
+[dependency-groups]
+dev = [
+    "pytest>=8.3,<9",
+    "pyyaml>=6,<7",
+    "ruff>=0.8,<1",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev"]
+
+# Liệt kê rõ từng module, không dùng glob: thư mục khớp mà thiếu pyproject.toml làm
+# hỏng mọi lệnh uv của cả nhóm. Vai nào thêm module thì thêm pyproject.toml và dòng
+# tương ứng vào `members` trong cùng một PR (xem docs/onboarding.md).
+[tool.uv.workspace]
+members = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+# gốc repo cho ingestion/, enrichment/, jobs/<job>; libs/ cho scamradar_core
+pythonpath = [".", "libs"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
