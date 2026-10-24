@@ -5,7 +5,8 @@ set -euo pipefail
 
 DEST="${1:-$(cd "$(dirname "$0")" && pwd)}"
 PSL_URL="${PSL_URL:-https://publicsuffix.org/list/public_suffix_list.dat}"
-# Bảng confusables của Unicode (UTS #39). Ghim phiên bản để tái lập.
+# Bảng confusables của Unicode (UTS #39). URL trỏ bản `latest`, không ghim phiên bản;
+# phiên bản thật nằm ở VERSIONS.txt (sha256 và thời điểm tải) sau mỗi lần chạy. Cần tái lập chính xác thì đặt CONFUSABLES_URL tới bản có số phiên bản.
 CONFUSABLES_URL="${CONFUSABLES_URL:-https://www.unicode.org/Public/security/latest/confusables.txt}"
 
 mkdir -p "$DEST"
