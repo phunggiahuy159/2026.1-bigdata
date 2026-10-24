@@ -89,3 +89,49 @@ def test_domain_key_is_registered_domain():
     for table in TABLES:
         cols = columns(table)
         assert "domain" not in cols, table
+
+
+def ddl(table):
+    return (ICEBERG / f"{table}.sql").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("table", ["gold.domain_history", "silver.enrichment", "silver.labels"])
+def test_bucket_only_tables_document_merge_only(table):
+    sql = ddl(table)
+    assert "days(" not in sql.split("USING iceberg")[1].split("TBLPROPERTIES")[0]
+    assert "MERGE INTO" in sql and "KHÔNG overwritePartitions" in sql
+
+
+def test_cert_domains_documents_late_precert_and_missing_serial():
+    sql = ddl("silver.cert_domains")
+    assert "MERGE INTO" in sql and "lùi 1 ngày" in sql
+    assert "sha256:" in sql
+
+
+@pytest.mark.parametrize(
+    "table,column",
+    [
+        ("silver.cert_domains", "fqdn"),
+        ("silver.cert_domains", "registered_domain"),
+        ("silver.enrichment", "registered_domain"),
+        ("silver.labels", "registered_domain"),
+        ("gold.domain_history", "registered_domain"),
+        ("gold.domain_scores", "registered_domain"),
+        ("silver.domain_features", "registered_domain"),
+    ],
+)
+def test_domain_columns_are_ascii_punycode(table, column):
+    line = next(ln for ln in ddl(table).splitlines() if ln.strip().startswith(column + " "))
+    assert "punycode" in line
+
+
+def test_enrichment_ip_arrays_cover_a_and_aaaa():
+    sql = ddl("silver.enrichment")
+    for col in ("asn", "asn_org", "country"):
+        line = next(ln for ln in sql.splitlines() if ln.strip().startswith(col + " "))
+        assert "aaaa_records" in line, col
+
+
+def test_readme_requires_utc_session_timezone():
+    readme = (ICEBERG / "README.md").read_text(encoding="utf-8")
+    assert "spark.sql.session.timeZone=UTC" in readme

@@ -1,7 +1,7 @@
 -- Chủ ghi: P4 (jobs/batch_features). Đọc: P5. Hạt: (registered_domain, feature_date).
 CREATE TABLE IF NOT EXISTS silver.domain_features (
   feature_date      DATE      NOT NULL COMMENT 'ngày UTC của đặc trưng',
-  registered_domain STRING    NOT NULL,
+  registered_domain STRING    NOT NULL COMMENT 'domain gốc eTLD+1, ASCII punycode',
   cert_cnt_1h       INT       COMMENT 'số cert trong 1 giờ cuối ngày',
   cert_cnt_24h      INT,
   cert_cnt_7d       INT,
