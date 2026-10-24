@@ -22,7 +22,20 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
 
 1. **Mỗi bên chỉ ghi vùng của mình.** P3 chỉ `$set` `speed.*` và `brand_id`; P5 chỉ `$set` `batch.*`. Không ai `replaceOne` cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true` vì document có thể do bên nào đến trước tạo ra.
 2. **Điểm batch ghi đè.** Điểm hiệu lực (`effective_score`) tính khi đọc, không lưu: `batch.score` nếu có `batch`, ngược lại `speed.score`. `reasons` đi theo điểm được chọn.
-3. **Ghi chạy lại được.** Job batch chấm lại cùng `batch.score_date` ghi lại cùng giá trị (idempotent). Điểm của `score_date` cũ hơn không ghi đè `batch` có `score_date` mới hơn; cùng `score_date` thì `scored_ts` lớn hơn thắng.
+3. **Ghi chạy lại được, bản cũ không đè bản mới.** Điều kiện "mới hơn" **không** đặt trong filter của `updateOne` có `upsert: true`: nếu document đã tồn tại nhưng không khớp filter, MongoDB thử chèn document mới và lỗi trùng `_id` (E11000). Filter chỉ là `{_id: domain}`; điều kiện nằm trong **update bằng aggregation pipeline** (MongoDB 4.2+), chọn giữa khối `batch` mới và khối cũ:
+
+   ```python
+   # new = toàn bộ khối batch mới (xem quy tắc 4)
+   newer = {"$or": [
+       {"$not": ["$batch"]},
+       {"$gt": [new["score_date"], "$batch.score_date"]},
+       {"$and": [{"$eq": [new["score_date"], "$batch.score_date"]},
+                 {"$gte": [new["scored_ts"], "$batch.scored_ts"]}]},
+   ]}
+   coll.update_one({"_id": domain}, [{"$set": {"batch": {"$cond": [newer, new, "$batch"]}}}], upsert=True)
+   ```
+
+   Chấm lại cùng `score_date` ghi lại cùng giá trị (idempotent); `score_date` cũ hơn không đổi gì; cùng `score_date` thì `scored_ts` lớn hơn thắng. Không cần bắt E11000. Hợp đồng này áp dụng cho mọi bên ghi vào `domains`, kể cả `speed` của P3 nếu P3 cần chống ghi lùi (so `speed.updated_ts` tương tự).
 4. Domain chưa có `batch` (mới xuất hiện sau lần chấm cuối) chỉ có `speed`; ứng dụng hiển thị điểm speed và đánh dấu "chưa chấm batch".
 
 ## Ghi chú

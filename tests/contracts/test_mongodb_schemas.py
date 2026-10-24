@@ -108,3 +108,9 @@ def test_ttl_field_is_bson_date_and_required():
     assert "created_at" in alerts["required"]
     ttl = [i for i in load("indexes.json")["alerts"] if "expireAfterSeconds" in i]
     assert [list(i["keys"]) for i in ttl] == [["created_at"]]
+
+
+def test_readme_upsert_rule_keeps_filter_on_id_only():
+    readme = (MONGO / "README.md").read_text(encoding="utf-8")
+    assert "E11000" in readme
+    assert 'update_one({"_id": domain}, [' in readme
