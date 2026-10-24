@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct.raw.schema.json",
+  "title": "ct.raw",
+  "description": "Một chứng chỉ từ CertStream (định dạng lite) kèm seen_ts và collector_id. Kafka key = sha256 (hex, chữ thường, không dấu hai chấm). 6 partition, giữ 48 giờ, nén zstd. Ghi: P2. Đọc: P2, P3. Trùng bản ghi được chấp nhận; khử trùng phía sau theo sha256.",
+  "type": "object",
+  "required": ["sha256", "seen_ts", "collector_id", "update_type", "cert_index", "source", "not_before", "not_after", "all_domains"],
+  "additionalProperties": true,
+  "properties": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 của chứng chỉ; trùng với Kafka key."
+    },
+    "seen_ts": {
+      "type": "integer",
+      "description": "Thời điểm collector nhận bản ghi, UTC, mili giây từ epoch."
+    },
+    "collector_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Định danh tiến trình collector (ví dụ host-pid)."
+    },
+    "message_type": {
+      "type": "string",
+      "const": "certificate_update"
+    },
+    "update_type": {
+      "type": "string",
+      "enum": ["X509LogEntry", "PrecertLogEntry"]
+    },
+    "cert_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Chỉ số mục trong log CT."
+    },
+    "cert_link": {
+      "type": ["string", "null"],
+      "description": "URL tile/entry của log (chỉ để tham chiếu, không được fetch tự động)."
+    },
+    "ct_seen": {
+      "type": ["integer", "null"],
+      "description": "Trường `seen` của CertStream, UTC mili giây (gốc là giây thực)."
+    },
+    "submission_ts": {
+      "type": ["integer", "null"],
+      "description": "Trường `submission_timestamp` của CertStream, UTC mili giây."
+    },
+    "source": {
+      "type": "object",
+      "required": ["name", "url"],
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string" }
+      }
+    },
+    "not_before": {
+      "type": "integer",
+      "description": "UTC mili giây (CertStream trả giây)."
+    },
+    "not_after": {
+      "type": "integer",
+      "description": "UTC mili giây (CertStream trả giây)."
+    },
+    "serial_number": { "type": ["string", "null"] },
+    "fingerprint": { "type": ["string", "null"], "description": "SHA-1 dạng có dấu hai chấm, như CertStream." },
+    "signature_algorithm": { "type": ["string", "null"] },
+    "is_ca": { "type": ["boolean", "null"] },
+    "subject": { "$ref": "#/$defs/name" },
+    "issuer": { "$ref": "#/$defs/name" },
+    "all_domains": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Mọi tên trong CN và SAN, giữ nguyên chữ như nhận được."
+    },
+    "extensions": {
+      "type": ["object", "null"],
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "name": {
+      "type": ["object", "null"],
+      "properties": {
+        "C": { "type": "string" },
+        "ST": { "type": "string" },
+        "L": { "type": "string" },
+        "O": { "type": "string" },
+        "OU": { "type": "string" },
+        "CN": { "type": "string" },
+        "aggregated": { "type": "string" }
+      },
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}
