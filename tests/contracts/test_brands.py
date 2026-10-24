@@ -74,6 +74,20 @@ def test_no_domain_shared_between_brands():
             owners[d] = b["brand_id"]
 
 
+def test_optional_is_bool_and_only_three_international_brands():
+    for b in BRANDS:
+        assert isinstance(b.get("optional", False), bool), b["brand_id"]
+    assert {b["brand_id"] for b in BRANDS if b.get("optional")} == {"paypal", "steam", "facebook"}
+
+
+def test_no_keyword_shared_between_brands():
+    owners = {}
+    for b in BRANDS:
+        for kw in b["keywords"]:
+            assert kw not in owners or owners[kw] == b["brand_id"], (kw, owners[kw], b["brand_id"])
+            owners[kw] = b["brand_id"]
+
+
 def test_other_domains_ascii_lowercase_and_distinct_from_official():
     count = 0
     for b in BRANDS:
