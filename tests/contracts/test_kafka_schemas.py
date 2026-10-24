@@ -10,7 +10,11 @@ SCHEMAS = sorted(KAFKA.glob("*.schema.json"))
 
 
 def test_schemas_found():
-    assert {p.name for p in SCHEMAS} == {"ct.raw.schema.json", "ct.dlq.schema.json"}
+    assert {p.name for p in SCHEMAS} == {
+        "ct.raw.schema.json",
+        "ct.dlq.schema.json",
+        "alerts.v1.schema.json",
+    }
 
 
 @pytest.mark.parametrize("path", SCHEMAS, ids=lambda p: p.name)
