@@ -114,3 +114,10 @@ def test_readme_upsert_rule_keeps_filter_on_id_only():
     readme = (MONGO / "README.md").read_text(encoding="utf-8")
     assert "E11000" in readme
     assert '{"_id": domain}, [{"$set": {"batch"' in readme
+
+
+def test_batch_block_always_carries_nullable_links():
+    batch = load("domains.schema.json")["properties"]["batch"]
+    for name in ("campaign_id", "anomaly_cluster"):
+        assert name in batch["required"]
+        assert "null" in batch["properties"][name]["type"]

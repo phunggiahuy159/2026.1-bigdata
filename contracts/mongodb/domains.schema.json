@@ -24,7 +24,7 @@
     },
     "speed": {
       "type": "object",
-      "description": "P3 ghi bằng $set trên speed.*",
+      "description": "P3 ghi bằng $set cả khối `speed` mỗi lần cập nhật; trường không còn giá trị thì bỏ khỏi khối mới (khối mới thay hẳn khối cũ)",
       "required": [
         "score",
         "reasons",
@@ -66,13 +66,15 @@
     },
     "batch": {
       "type": "object",
-      "description": "P5 ghi (job chấm điểm hằng ngày) bằng $set trên batch.*; trường score_date, score, reasons, model_version, scored_ts lấy từ gold.domain_scores, enrichment từ silver.enrichment, campaign_id từ gold.campaigns",
+      "description": "P5 ghi (job chấm điểm hằng ngày) bằng $set cả khối `batch` mỗi lần chấm (campaign_id và anomaly_cluster luôn có mặt, null nếu không có); trường score_date, score, reasons, model_version, scored_ts lấy từ gold.domain_scores, enrichment từ silver.enrichment, campaign_id từ gold.campaigns",
       "required": [
         "score_date",
         "score",
         "reasons",
         "model_version",
-        "scored_ts"
+        "scored_ts",
+        "campaign_id",
+        "anomaly_cluster"
       ],
       "additionalProperties": false,
       "properties": {

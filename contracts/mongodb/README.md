@@ -20,7 +20,7 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
 
 ## Quy tắc hợp nhất speed + batch (`domains`)
 
-1. **Mỗi bên chỉ ghi vùng của mình.** P3 chỉ `$set` `speed.*` và `brand_id`; P5 chỉ `$set` `batch.*`. Không ai `replaceOne` cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true` vì document có thể do bên nào đến trước tạo ra.
+1. **Mỗi bên chỉ ghi vùng của mình, và ghi cả khối.** P3 `$set` cả khối `speed` (cùng `brand_id`); P5 `$set` cả khối `batch`. Không `$set` từng trường con (`batch.campaign_id`, ...): khi domain rời chiến dịch hoặc không còn cụm bất thường, trường cũ sẽ nằm lại. Khối mới thay hẳn khối cũ; `batch.campaign_id` và `batch.anomaly_cluster` luôn có mặt, `null` nếu không có. Không ai `replaceOne` cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true` vì document có thể do bên nào đến trước tạo ra.
 2. **Điểm batch ghi đè.** Điểm hiệu lực (`effective_score`) tính khi đọc, không lưu: `batch.score` nếu có `batch`, ngược lại `speed.score`. `reasons` đi theo điểm được chọn.
 3. **Ghi chạy lại được, bản cũ không đè bản mới.** Điều kiện "mới hơn" **không** đặt trong filter của `updateOne` có `upsert: true`: nếu document đã tồn tại nhưng không khớp filter, MongoDB thử chèn document mới và lỗi trùng `_id` (E11000). Filter chỉ là `{_id: domain}`; điều kiện nằm trong **update bằng aggregation pipeline** (MongoDB 4.2+), chọn giữa khối `batch` mới và khối cũ:
 
