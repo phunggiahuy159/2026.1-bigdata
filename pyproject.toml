@@ -19,21 +19,17 @@ dev = [
 package = false
 default-groups = ["dev"]
 
-# Mỗi module có pyproject.toml riêng được tự nhận làm member; thêm module mới
-# không phải sửa file gốc, nên các vai ít đụng nhau trên uv.lock.
+# Liệt kê rõ từng module, không dùng glob: thư mục khớp mà thiếu pyproject.toml làm
+# hỏng mọi lệnh uv của cả nhóm. Vai nào thêm module thì thêm pyproject.toml và dòng
+# tương ứng vào `members` trong cùng một PR (xem docs/onboarding.md).
 [tool.uv.workspace]
-members = [
-    "libs/*",
-    "ingestion",
-    "enrichment",
-    "jobs/*",
-    "labeling",
-    "serving",
-]
+members = []
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+# gốc repo cho ingestion/, enrichment/, jobs/<job>; libs/ cho scamradar_core
+pythonpath = [".", "libs"]
 
 [tool.ruff]
 line-length = 100
