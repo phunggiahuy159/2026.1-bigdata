@@ -50,6 +50,10 @@ def test_brand_fields(brand):
     assert brand["keywords"], "thiếu từ khoá"
     assert brand["aliases"], "thiếu biến thể viết tắt"
     assert isinstance(brand["verified"], bool)
+    if brand["verified"]:
+        assert brand.get("source", "").startswith("https://"), "verified thiếu source https"
+    else:
+        assert brand.get("note", "").strip(), "chưa verified thì phải có note"
     for kw in [*brand["keywords"], *brand["aliases"]]:
         assert kw == kw.lower().strip() and kw, (brand["brand_id"], kw)
         assert re.match(r"^[a-z0-9]+$", kw), (brand["brand_id"], kw)
@@ -68,6 +72,11 @@ def test_no_domain_shared_between_brands():
         for d in b["official_domains"]:
             assert d not in owners, f"{d}: {owners[d]} và {b['brand_id']}"
             owners[d] = b["brand_id"]
+
+
+def test_most_brands_verified():
+    verified = sum(b["verified"] for b in BRANDS)
+    assert verified >= len(BRANDS) // 2
 
 
 def test_each_category_present_and_unverified_notes():
