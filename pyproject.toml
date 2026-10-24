@@ -1,0 +1,44 @@
+[project]
+name = "scamradar"
+version = "0.1.0"
+description = "ScamRadar VN: real-time detection of phishing websites impersonating Vietnamese brands"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+# Gốc workspace chỉ giữ công cụ dev chung. Mỗi vai khai báo dependency của module
+# mình trong pyproject.toml riêng ở thư mục module (xem docs/onboarding.md).
+[dependency-groups]
+dev = [
+    "pytest>=8.3,<9",
+    "pyyaml>=6,<7",
+    "ruff>=0.8,<1",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev"]
+
+# Mỗi module có pyproject.toml riêng được tự nhận làm member; thêm module mới
+# không phải sửa file gốc, nên các vai ít đụng nhau trên uv.lock.
+[tool.uv.workspace]
+members = [
+    "libs/*",
+    "ingestion",
+    "enrichment",
+    "jobs/*",
+    "labeling",
+    "serving",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
