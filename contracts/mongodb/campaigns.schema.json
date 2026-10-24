@@ -1,27 +1,89 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "campaigns.schema.json",
   "title": "campaigns",
-  "description": "Chiến dịch (cụm domain liên quan) do P5 ghi từ gold.campaigns của P4. Ghi lại bằng replace theo _id.",
+  "description": "Chiến dịch do P5 ghi từ bản mới nhất của gold.campaigns (P4); tên trường theo bảng đó. Ghi lại bằng replace theo _id.",
   "type": "object",
-  "required": ["_id", "domains", "size", "run_date"],
+  "required": [
+    "_id",
+    "run_date",
+    "domain_count",
+    "domains"
+  ],
   "additionalProperties": false,
   "properties": {
-    "_id": {"type": "string", "description": "campaign_id lấy từ gold.campaigns"},
-    "domains": {"type": "array", "items": {"type": "string"}, "description": "domain gốc thành viên"},
-    "size": {"type": "integer", "minimum": 1},
-    "brand_ids": {"type": "array", "items": {"type": "string"}},
-    "shared": {
-      "type": "object",
-      "description": "đặc điểm chung tạo nên cụm",
-      "additionalProperties": false,
-      "properties": {
-        "asn": {"type": ["integer", "null"]},
-        "ips": {"type": "array", "items": {"type": "string"}},
-        "ca": {"type": ["string", "null"]}
+    "_id": {
+      "type": "string",
+      "description": "campaign_id của gold.campaigns"
+    },
+    "run_date": {
+      "type": "string",
+      "format": "date",
+      "description": "ngày chạy job đồ thị (UTC)"
+    },
+    "domain_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+        "maxLength": 253
+      },
+      "description": "registered_domain thuộc chiến dịch"
+    },
+    "brands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "brand_id bị mạo danh"
+    },
+    "shared_ips": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "first_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
-    "last_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
-    "run_date": {"type": "string", "format": "date", "description": "ngày chạy job đồ thị"}
+    "shared_nameservers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "asns": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "hub_node": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hub_rank": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "first_seen_ts": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "UTC, mili giây"
+    },
+    "last_seen_ts": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "UTC, mili giây"
+    }
   }
 }

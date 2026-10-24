@@ -1,20 +1,90 @@
 {
   "domains": [
-    {"name": "batch_score_desc", "keys": {"batch.score": -1}},
-    {"name": "speed_score_desc", "keys": {"speed.score": -1}},
-    {"name": "brand_speed_score", "keys": {"brand_id": 1, "speed.score": -1}},
-    {"name": "campaign", "keys": {"batch.campaign_id": 1}, "partialFilterExpression": {"batch.campaign_id": {"$exists": true}}},
-    {"name": "last_seen_desc", "keys": {"speed.last_seen_ts": -1}}
+    {
+      "name": "batch_score_desc",
+      "keys": {
+        "batch.score": -1
+      }
+    },
+    {
+      "name": "speed_score_desc",
+      "keys": {
+        "speed.score": -1
+      }
+    },
+    {
+      "name": "brand_speed_score",
+      "keys": {
+        "brand_id": 1,
+        "speed.score": -1
+      }
+    },
+    {
+      "name": "campaign",
+      "keys": {
+        "batch.campaign_id": 1
+      },
+      "partialFilterExpression": {
+        "batch.campaign_id": {
+          "$exists": true
+        }
+      }
+    },
+    {
+      "name": "last_seen_desc",
+      "keys": {
+        "speed.last_seen_ts": -1
+      }
+    }
   ],
   "alerts": [
-    {"name": "recent_alerts", "keys": {"alert_ts": -1}},
-    {"name": "by_domain", "keys": {"domain": 1, "alert_ts": -1}},
-    {"name": "by_brand", "keys": {"brand_id": 1, "alert_ts": -1}},
-    {"name": "ttl_30d", "keys": {"created_at": 1}, "expireAfterSeconds": 2592000}
+    {
+      "name": "recent_alerts",
+      "keys": {
+        "alert_ts": -1
+      }
+    },
+    {
+      "name": "by_domain",
+      "keys": {
+        "domain": 1,
+        "alert_ts": -1
+      }
+    },
+    {
+      "name": "by_brand",
+      "keys": {
+        "brand_id": 1,
+        "alert_ts": -1
+      }
+    },
+    {
+      "name": "ttl_30d",
+      "keys": {
+        "created_at": 1
+      },
+      "expireAfterSeconds": 2592000
+    }
   ],
   "campaigns": [
-    {"name": "by_run_date", "keys": {"run_date": -1, "size": -1}},
-    {"name": "by_domain", "keys": {"domains": 1}},
-    {"name": "by_brand", "keys": {"brand_ids": 1}}
+    {
+      "name": "by_run_date",
+      "keys": {
+        "run_date": -1,
+        "domain_count": -1
+      }
+    },
+    {
+      "name": "by_domain",
+      "keys": {
+        "domains": 1
+      }
+    },
+    {
+      "name": "by_brand",
+      "keys": {
+        "brands": 1
+      }
+    }
   ]
 }

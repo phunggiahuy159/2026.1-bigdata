@@ -1,32 +1,32 @@
-# Hợp đồng MongoDB
+# contracts/mongodb
 
-Cơ sở dữ liệu `scamradar`, ba collection. Schema là JSON Schema (`*.schema.json`), index ở `indexes.json`.
-Đây là **đề xuất** của P5, chờ P3 (ghi `domains.speed`, `alerts`) và P4 (nguồn `campaigns`) xác nhận.
+MongoDB, database `scamradar`, ba collection. Schema là JSON Schema (`*.schema.json`), index ở `indexes.json`.
+Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceberg`.
 
-| Collection | `_id` | Ghi | Đọc |
-| --- | --- | --- | --- |
-| `domains` | domain gốc (eTLD+1) | P3 (`speed`, `brand_id`), P5 (`batch`) | P5 (Streamlit) |
-| `alerts` | `{domain}\|{alert_ts}` | P3 | P5 |
-| `campaigns` | `campaign_id` | P5 | P5 |
+| Collection | `_id` | Ghi | Đọc | Nguồn |
+| --- | --- | --- | --- | --- |
+| `domains` | domain gốc (eTLD+1) | P3 (`speed`, `brand_id`), P5 (`batch`) | P5 (Streamlit) | `alerts.v1`, `gold.domain_scores`, `silver.enrichment`, `gold.campaigns` |
+| `alerts` | `{domain}\|{alert_ts}` | P3 | P5 | `alerts.v1` |
+| `campaigns` | `campaign_id` | P5 | P5 | `gold.campaigns` (P4) |
+
+## Quy ước chung
+
+- Domain (`_id` của `domains`, `alerts.domain`, `campaigns.domains[]`) là eTLD+1 **ASCII punycode** (`xn--...`), viết thường, giống `registered_domain` ở Iceberg. Unicode chỉ dùng khi hiển thị.
+- Thời gian là UTC mili giây, số nguyên (Spark `TIMESTAMP` ghi sang Mongo thì đổi về mili giây epoch). Ngày (`score_date`, `run_date`) là chuỗi `YYYY-MM-DD` theo UTC.
+- `score` là số nguyên 0-100 kèm `reasons[]`.
+- `batch.enrichment.asn`, `asn_org`, `country` là **mảng**, một phần tử cho mỗi IP của `concat(a_records, aaaa_records)` theo cùng thứ tự, phần tử `null` nếu IP không tra được (như `silver.enrichment`).
+- Tên trường lấy theo cột Iceberg tương ứng: `gold.domain_scores` (`score_date`, `score`, `reasons`, `model_version`, `scored_ts`), `gold.campaigns` (`run_date`, `domain_count`, `domains`, `brands`, `shared_ips`, `shared_nameservers`, `asns`, `hub_node`, `hub_rank`, `first_seen_ts`, `last_seen_ts`).
+- Domain lừa đảo trong ví dụ và tài liệu viết dạng vô hiệu hoá (`hxxps://abc[.]com`); dữ liệu trong collection là domain thật, mọi nơi hiển thị phải vô hiệu hoá.
 
 ## Quy tắc hợp nhất speed + batch (`domains`)
 
-1. **Mỗi bên chỉ ghi vùng của mình.** P3 chỉ `$set` `speed.*` và `brand_id`; P5 chỉ `$set` `batch.*`.
-   Không ai dùng `replaceOne` trên cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true`
-   vì document có thể do bên nào đến trước tạo ra.
-2. **Điểm hiệu lực** (`effective_score`) tính khi đọc, không lưu:
-   `batch.score` nếu có `batch`, ngược lại `speed.score`. Điểm batch ghi đè khi có, vì có enrichment và ngữ cảnh đồ thị.
-3. **Lý do** đi theo điểm được chọn: `batch.reasons` nếu dùng điểm batch, ngược lại `speed.reasons`.
-4. **Ngoại lệ - speed mới hơn batch.** Nếu `speed.updated_ts` lớn hơn `batch.updated_ts` thì domain có chứng chỉ mới
-   sau lần chấm batch cuối; ứng dụng dùng `max(batch.score, speed.score)` và gắn cờ "cập nhật sau batch".
-   (P3/P5 cần xác nhận quy tắc này; nếu không muốn, bỏ mục 4.)
-5. **Ghi lại chạy lại được.** Job batch chấm lại cùng `scored_date` thì ghi cùng giá trị (idempotent). Điểm
-   `batch` của ngày cũ hơn không ghi đè `batch` của ngày mới hơn (so `batch.scored_date`).
-6. Thời gian là UTC mili giây (số nguyên); `score` 0-100; `reasons[]` là danh sách mã lý do.
+1. **Mỗi bên chỉ ghi vùng của mình.** P3 chỉ `$set` `speed.*` và `brand_id`; P5 chỉ `$set` `batch.*`. Không ai `replaceOne` cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true` vì document có thể do bên nào đến trước tạo ra.
+2. **Điểm batch ghi đè.** Điểm hiệu lực (`effective_score`) tính khi đọc, không lưu: `batch.score` nếu có `batch`, ngược lại `speed.score`. `reasons` đi theo điểm được chọn.
+3. **Ghi chạy lại được.** Job batch chấm lại cùng `batch.score_date` ghi lại cùng giá trị (idempotent). Điểm của `score_date` cũ hơn không ghi đè `batch` có `score_date` mới hơn; cùng `score_date` thì `scored_ts` lớn hơn thắng.
+4. Domain chưa có `batch` (mới xuất hiện sau lần chấm cuối) chỉ có `speed`; ứng dụng hiển thị điểm speed và đánh dấu "chưa chấm batch".
 
 ## Ghi chú
 
-- `alerts` có TTL 30 ngày trên `created_at` (chỉ là bản xem nhanh; bản đầy đủ nằm ở Kafka/Iceberg).
-- Thay đổi tương thích ngược (thêm trường tuỳ chọn) chỉ cần báo; đổi không tương thích phải tăng phiên bản
-  (collection mới `domains_v2`).
-- Domain lừa đảo trong ví dụ và tài liệu luôn viết dạng vô hiệu hoá (`hxxps://abc[.]com`).
+- `alerts` có TTL 30 ngày trên `created_at` (bản xem nhanh; bản đầy đủ nằm ở Kafka/Iceberg).
+- `alerts` bám `alerts.v1`; hiện chưa có `contracts/kafka/alerts.v1.schema.json`, P3 chốt xong thì đối chiếu lại tên trường.
+- Thay đổi tương thích ngược (thêm trường tuỳ chọn) chỉ cần báo; đổi không tương thích thì đổi tên collection có phiên bản (`domains_v2`) và báo người đọc, người ghi.

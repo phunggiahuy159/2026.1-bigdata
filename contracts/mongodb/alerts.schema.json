@@ -1,18 +1,60 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alerts.schema.json",
   "title": "alerts",
-  "description": "Bản sao cảnh báo từ topic alerts.v1, do P3 ghi (sink idempotent theo _id). Bất biến sau khi ghi.",
+  "description": "Bản sao cảnh báo từ topic alerts.v1, do P3 ghi (sink idempotent theo _id). Bất biến sau khi ghi. Trường lấy theo alerts.v1; khi P3 chốt contracts/kafka/alerts.v1 thì đối chiếu lại tên trường.",
   "type": "object",
-  "required": ["_id", "domain", "score", "reasons", "alert_ts"],
+  "required": [
+    "_id",
+    "domain",
+    "score",
+    "reasons",
+    "alert_ts"
+  ],
   "additionalProperties": false,
   "properties": {
-    "_id": {"type": "string", "description": "`{domain}|{alert_ts}`; ghi lại cùng cảnh báo thì ghi đè cùng document"},
-    "domain": {"type": "string", "description": "domain gốc (eTLD+1)"},
-    "brand_id": {"type": ["string", "null"]},
-    "score": {"type": "integer", "minimum": 0, "maximum": 100},
-    "reasons": {"type": "array", "items": {"type": "string"}},
-    "fqdn": {"type": ["string", "null"], "description": "tên miền đầy đủ trong chứng chỉ"},
-    "alert_ts": {"type": "integer", "description": "UTC, mili giây, thời điểm phát"},
-    "created_at": {"type": "string", "format": "date-time", "description": "UTC; dùng cho TTL index"}
+    "_id": {
+      "type": "string",
+      "description": "`{domain}|{alert_ts}`; ghi lại cùng cảnh báo thì ghi đè cùng document"
+    },
+    "domain": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "maxLength": 253,
+      "description": "domain gốc eTLD+1, ASCII punycode; trùng key Kafka alerts.v1"
+    },
+    "brand_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fqdn": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "tên đầy đủ trong chứng chỉ, ASCII punycode"
+    },
+    "alert_ts": {
+      "type": "integer",
+      "description": "UTC, mili giây, thời điểm phát"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC; dùng cho TTL index"
+    }
   }
 }
