@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "campaigns.schema.json",
   "title": "campaigns",
-  "description": "Chiến dịch do P5 ghi từ bản mới nhất của gold.campaigns (P4); tên trường theo bảng đó. Ghi lại bằng replace theo _id.",
+  "description": "Chiến dịch do P5 ghi từ bản mới nhất của gold.campaigns (P4); tên trường theo bảng đó. Ghi lại bằng replace theo _id. JSON Schema ở đây là tài liệu, không dùng trực tiếp làm validator MongoDB; kiểu BSON nằm ở `x-bsonType` (xem README).",
   "type": "object",
   "required": [
     "_id",
@@ -23,7 +23,8 @@
     },
     "domain_count": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "x-bsonType": "int"
     },
     "domains": {
       "type": "array",
@@ -56,7 +57,8 @@
     "asns": {
       "type": "array",
       "items": {
-        "type": "integer"
+        "type": "integer",
+        "x-bsonType": "int"
       }
     },
     "hub_node": {
@@ -69,21 +71,24 @@
       "type": [
         "number",
         "null"
-      ]
+      ],
+      "x-bsonType": "double"
     },
     "first_seen_ts": {
       "type": [
         "integer",
         "null"
       ],
-      "description": "UTC, mili giây"
+      "description": "UTC, mili giây",
+      "x-bsonType": "long"
     },
     "last_seen_ts": {
       "type": [
         "integer",
         "null"
       ],
-      "description": "UTC, mili giây"
+      "description": "UTC, mili giây",
+      "x-bsonType": "long"
     }
   }
 }

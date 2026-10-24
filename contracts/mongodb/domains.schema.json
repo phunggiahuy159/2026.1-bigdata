@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "domains.schema.json",
   "title": "domains",
-  "description": "Một document cho mỗi domain gốc (eTLD+1). Trường `speed` và `brand_id` do P3 ghi, `batch` do P5 ghi; điểm batch ghi đè điểm speed khi có (xem README.md). Đọc: P5 (Streamlit).",
+  "description": "Một document cho mỗi domain gốc (eTLD+1). Trường `speed` và `brand_id` do P3 ghi, `batch` do P5 ghi; điểm batch ghi đè điểm speed khi có (xem README.md). Đọc: P5 (Streamlit). JSON Schema ở đây là tài liệu, không dùng trực tiếp làm validator MongoDB; kiểu BSON nằm ở `x-bsonType` (xem README).",
   "type": "object",
   "required": [
     "_id"
@@ -35,7 +35,8 @@
         "score": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 100
+          "maximum": 100,
+          "x-bsonType": "int"
         },
         "reasons": {
           "type": "array",
@@ -45,22 +46,26 @@
         },
         "first_seen_ts": {
           "type": "integer",
-          "description": "UTC, mili giây"
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
         },
         "last_seen_ts": {
           "type": "integer",
-          "description": "UTC, mili giây"
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
         },
         "cert_count": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "x-bsonType": "int"
         },
         "rule_version": {
           "type": "string"
         },
         "updated_ts": {
           "type": "integer",
-          "description": "UTC, mili giây"
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
         }
       }
     },
@@ -86,7 +91,8 @@
         "score": {
           "type": "integer",
           "minimum": 0,
-          "maximum": 100
+          "maximum": 100,
+          "x-bsonType": "int"
         },
         "reasons": {
           "type": "array",
@@ -100,7 +106,8 @@
         },
         "scored_ts": {
           "type": "integer",
-          "description": "UTC, mili giây"
+          "description": "UTC, mili giây",
+          "x-bsonType": "long"
         },
         "campaign_id": {
           "type": [
@@ -114,7 +121,8 @@
             "integer",
             "null"
           ],
-          "description": "cụm KMeans cho domain chưa có nhãn"
+          "description": "cụm KMeans cho domain chưa có nhãn",
+          "x-bsonType": "int"
         },
         "enrichment": {
           "type": "object",
@@ -123,7 +131,8 @@
           "properties": {
             "lookup_ts": {
               "type": "integer",
-              "description": "UTC, mili giây"
+              "description": "UTC, mili giây",
+              "x-bsonType": "long"
             },
             "a_records": {
               "type": "array",
@@ -149,7 +158,8 @@
                 "type": [
                   "integer",
                   "null"
-                ]
+                ],
+                "x-bsonType": "int"
               }
             },
             "asn_org": {

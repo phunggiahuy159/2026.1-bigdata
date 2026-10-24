@@ -18,6 +18,18 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
 - Tên trường lấy theo cột Iceberg tương ứng: `gold.domain_scores` (`score_date`, `score`, `reasons`, `model_version`, `scored_ts`), `gold.campaigns` (`run_date`, `domain_count`, `domains`, `brands`, `shared_ips`, `shared_nameservers`, `asns`, `hub_node`, `hub_rank`, `first_seen_ts`, `last_seen_ts`).
 - Domain lừa đảo trong ví dụ và tài liệu viết dạng vô hiệu hoá (`hxxps://abc[.]com`); dữ liệu trong collection là domain thật, mọi nơi hiển thị phải vô hiệu hoá.
 
+## Kiểu BSON
+
+`*.schema.json` là JSON Schema dùng làm tài liệu và để test; **không** gắn thẳng làm `$jsonSchema` validator của MongoDB vì MongoDB dùng `bsonType` (`int`, `long`, `date`, ...) và không hiểu `type: integer` hay `format`. Kiểu BSON thực sự ghi ở từ khoá `x-bsonType`; nếu sau này cần validator thì sinh từ đó.
+
+| Kiểu trong contract | `x-bsonType` | Ghi chú cho người ghi |
+| --- | --- | --- |
+| mốc thời gian mili giây (`*_ts`) | `long` | ≈ 1,7e12, vượt int32: phải là int64. Spark: `LongType` (`unix_millis(ts)`); pymongo: `int` Python tự thành int64 khi lớn. Không ghi `TimestampType` vì connector sẽ ra `date` |
+| `score`, `cert_count`, `domain_count`, `anomaly_cluster`, `asn`, `asns[]` | `int` | |
+| `hub_rank` | `double` | |
+| `alerts.created_at` | `date` | BSON Date cho TTL |
+| `score_date`, `run_date` | chuỗi `YYYY-MM-DD` (UTC) | |
+
 ## Quy tắc hợp nhất speed + batch (`domains`)
 
 1. **Mỗi bên chỉ ghi vùng của mình, và ghi cả khối.** P3 `$set` cả khối `speed` (cùng `brand_id`); P5 `$set` cả khối `batch`. Không `$set` từng trường con (`batch.campaign_id`, ...): khi domain rời chiến dịch hoặc không còn cụm bất thường, trường cũ sẽ nằm lại. Khối mới thay hẳn khối cũ; `batch.campaign_id` và `batch.anomaly_cluster` luôn có mặt, `null` nếu không có. Không ai `replaceOne` cả document, nên hai bên không ghi đè lẫn nhau. Dùng `upsert: true` vì document có thể do bên nào đến trước tạo ra.

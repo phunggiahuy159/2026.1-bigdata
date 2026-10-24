@@ -126,3 +126,15 @@ def test_batch_block_always_carries_nullable_links():
 def test_readme_documents_campaign_cleanup_by_run_date():
     readme = (MONGO / "README.md").read_text(encoding="utf-8")
     assert "deleteMany({run_date: {$lt: D}})" in readme
+
+
+@pytest.mark.parametrize("coll", COLLECTIONS)
+def test_numeric_fields_declare_bson_type(coll):
+    for node in walk(load(f"{coll}.schema.json")):
+        for name, prop in node.get("properties", {}).items():
+            types = prop["type"] if isinstance(prop["type"], list) else [prop["type"]]
+            if "integer" in types:
+                expected = "long" if name.endswith("_ts") else "int"
+                assert prop["x-bsonType"] == expected, name
+            if "number" in types:
+                assert prop["x-bsonType"] == "double", name
