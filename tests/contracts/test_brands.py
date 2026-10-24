@@ -69,9 +69,27 @@ def test_official_domains_are_ascii_lowercase():
 def test_no_domain_shared_between_brands():
     owners = {}
     for b in BRANDS:
-        for d in b["official_domains"]:
+        for d in [*b["official_domains"], *b.get("other_domains", [])]:
             assert d not in owners, f"{d}: {owners[d]} và {b['brand_id']}"
             owners[d] = b["brand_id"]
+
+
+def test_other_domains_ascii_lowercase_and_distinct_from_official():
+    count = 0
+    for b in BRANDS:
+        others = b.get("other_domains", [])
+        assert len(others) == len(set(others)), b["brand_id"]
+        for d in others:
+            count += 1
+            assert DOMAIN.match(d), (b["brand_id"], d)
+            assert d not in b["official_domains"], (b["brand_id"], d)
+    assert count > 0
+
+
+def test_discontinued_brands_kept_with_note():
+    by_id = {b["brand_id"]: b for b in BRANDS}
+    for bid in ("sendo", "moca", "mic", "timo"):
+        assert bid in by_id and "bị mạo danh" in by_id[bid]["note"], bid
 
 
 def test_most_brands_verified():
