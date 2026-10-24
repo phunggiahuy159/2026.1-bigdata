@@ -26,13 +26,21 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
 
    ```python
    # new = toàn bộ khối batch mới (xem quy tắc 4)
-   newer = {"$or": [
-       {"$not": ["$batch"]},
-       {"$gt": [new["score_date"], "$batch.score_date"]},
-       {"$and": [{"$eq": [new["score_date"], "$batch.score_date"]},
-                 {"$gte": [new["scored_ts"], "$batch.scored_ts"]}]},
-   ]}
-   coll.update_one({"_id": domain}, [{"$set": {"batch": {"$cond": [newer, new, "$batch"]}}}], upsert=True)
+   newer = {
+       "$or": [
+           {"$not": ["$batch"]},
+           {"$gt": [new["score_date"], "$batch.score_date"]},
+           {
+               "$and": [
+                   {"$eq": [new["score_date"], "$batch.score_date"]},
+                   {"$gte": [new["scored_ts"], "$batch.scored_ts"]},
+               ]
+           },
+       ]
+   }
+   coll.update_one(
+       {"_id": domain}, [{"$set": {"batch": {"$cond": [newer, new, "$batch"]}}}], upsert=True
+   )
    ```
 
    Chấm lại cùng `score_date` ghi lại cùng giá trị (idempotent); `score_date` cũ hơn không đổi gì; cùng `score_date` thì `scored_ts` lớn hơn thắng. Không cần bắt E11000. Hợp đồng này áp dụng cho mọi bên ghi vào `domains`, kể cả `speed` của P3 nếu P3 cần chống ghi lùi (so `speed.updated_ts` tương tự).

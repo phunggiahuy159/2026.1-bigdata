@@ -113,4 +113,4 @@ def test_ttl_field_is_bson_date_and_required():
 def test_readme_upsert_rule_keeps_filter_on_id_only():
     readme = (MONGO / "README.md").read_text(encoding="utf-8")
     assert "E11000" in readme
-    assert 'update_one({"_id": domain}, [' in readme
+    assert '{"_id": domain}, [{"$set": {"batch"' in readme
