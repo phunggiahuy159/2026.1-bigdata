@@ -13,9 +13,16 @@ pre-commit install      # bật gitleaks, chặn file lớn, nbstripout, ruff
 
 ## Thêm dependency cho module của mình
 
-`pyproject.toml` gốc chỉ giữ công cụ dev. Mỗi module có `pyproject.toml` riêng
-trong thư mục của mình (`libs/<tên>`, `ingestion`, `enrichment`, `jobs/<tên>`,
-`labeling`, `serving`) và tự được nhận làm member của workspace.
+`pyproject.toml` gốc chỉ giữ công cụ dev, và `[tool.uv.workspace].members` liệt kê rõ
+từng module (không dùng glob). Một thư mục nằm trong `members` mà thiếu `pyproject.toml`
+làm hỏng mọi lệnh `uv` của cả nhóm, nên khi thêm module mới, trong **cùng một PR**:
+
+1. Tạo `pyproject.toml` tối thiểu trong thư mục module (`libs/<tên>`, `ingestion`,
+   `enrichment`, `jobs/<tên>`, `labeling`, `serving`).
+2. Thêm đường dẫn thư mục đó vào `members` của `pyproject.toml` gốc (một dòng).
+3. Chạy `uv lock` và commit `uv.lock`.
+
+Thư mục chưa có trong `members` không ảnh hưởng uv.
 
 ```toml
 [project]
@@ -28,9 +35,21 @@ dependencies = ["redis>=5", "scamradar-core"]
 scamradar-core = { workspace = true }
 ```
 
-Sau đó chạy `uv lock` và commit `uv.lock`. Khi `uv.lock` xung đột lúc merge, chạy lại
-`uv lock` trên nhánh đã rebase thay vì sửa tay. Phiên bản PySpark, Iceberg, GraphFrames
-theo image Spark chung của P1, không tự đổi.
+Khi `uv.lock` xung đột lúc merge, chạy lại `uv lock` trên nhánh đã rebase thay vì sửa tay.
+Phiên bản PySpark, Iceberg, GraphFrames theo image Spark chung của P1, không tự đổi.
+
+## Import trong test
+
+Pytest đặt `pythonpath = [".", "libs"]`, nên test import trực tiếp từ gốc repo:
+`import ingestion`, `import jobs.stream_detect`, `import scamradar_core`. Module cần
+`__init__.py` (thư mục `jobs/` dùng namespace package). Nguồn nằm ngoài các thư mục
+trên thì báo P1 thêm vào `pythonpath`.
+
+## Phiên bản ruff
+
+`rev` của ruff trong `.pre-commit-config.yaml` phải bằng bản trong `uv.lock`
+(`v<phiên bản>`); test trong `tests/deploy` kiểm tra điều này. Nâng ruff:
+`uv lock --upgrade-package ruff` rồi sửa `rev` theo.
 
 ## Biến môi trường
 
