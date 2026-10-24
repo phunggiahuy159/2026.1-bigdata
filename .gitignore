@@ -1,0 +1,40 @@
+# secret và cấu hình máy
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kubeconfig*
+.kube/
+
+# dữ liệu và file lớn (nằm trên zenai-cpu1:/bigd-data hoặc MinIO)
+data/raw/
+data/cache/
+data/reference/*
+!data/reference/brands.yaml
+!data/reference/download.sh
+*.parquet
+*.avro
+*.jsonl
+*.jsonl.gz
+checkpoints/
+spark-warehouse/
+spark-events/
+models/
+!tests/fixtures/**
+
+# Python và công cụ
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+dist/
+build/
+
+# cá nhân
+.DS_Store
+.idea/
+.vscode/
+notes/
