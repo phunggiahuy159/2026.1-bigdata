@@ -1,0 +1,71 @@
+# Volume nằm trên /bigd-data của node kind (mount từ ~/bigd/data trên zenai-cpu1), sống sót khi
+# tạo lại cụm. StorageClass mặc định `standard` ghi vào /var/local-path-provisioner trong node,
+# không dùng cho dữ liệu của dự án. Thư mục phải tạo trước bằng `make storage-dirs`.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: bigd-data
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bigd-data-kafka
+  labels:
+    bigd.volume: kafka
+spec:
+  storageClassName: bigd-data
+  capacity:
+    storage: 60Gi
+  accessModes: [ReadWriteOnce]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /bigd-data/kafka
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bigd-data-minio
+  labels:
+    bigd.volume: minio
+spec:
+  storageClassName: bigd-data
+  capacity:
+    storage: 150Gi
+  accessModes: [ReadWriteOnce]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /bigd-data/minio
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bigd-data-catalog-postgres
+  labels:
+    bigd.volume: catalog-postgres
+spec:
+  storageClassName: bigd-data
+  capacity:
+    storage: 5Gi
+  accessModes: [ReadWriteOnce]
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /bigd-data/catalog-postgres
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: catalog-postgres-data
+  namespace: iceberg
+spec:
+  storageClassName: bigd-data
+  volumeName: bigd-data-catalog-postgres
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
