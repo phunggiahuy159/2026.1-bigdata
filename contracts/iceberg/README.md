@@ -32,7 +32,23 @@ Thứ tự tạo: `00_namespaces.sql`, rồi các bảng bất kỳ (không có 
 - `bronze.ct_certs`: chỉ append (P2, exactly-once qua checkpoint).
 - `silver.*` và `gold.*` của P4: job nhận khoảng ngày, ghi bằng `overwritePartitions()` hoặc `MERGE INTO` theo khoá hạt ở bảng trên; không `append` thuần.
 
+## Quan hệ với Kafka
+
+`bronze.ct_certs` khớp `contracts/kafka/ct.raw.schema.json`. Phép đổi do job bronze (P2) thực hiện:
+
+| `ct.raw` | `bronze.ct_certs` |
+| --- | --- |
+| `seen_ts`, `not_before`, `not_after`, `ct_seen`, `submission_ts` (số nguyên, UTC mili giây) | cột `TIMESTAMP` cùng tên (UTC, mili giây) |
+| `sha256` | `sha256` |
+| `subject.CN` | `subject_cn` |
+| `issuer.CN`, `issuer.O` | `issuer_cn`, `issuer_o` |
+| `source.name`, `source.url` | `source_name`, `log_url` |
+| các trường còn lại | cùng tên |
+| `message_type`, `extensions`, `subject`/`issuer` khác CN/O | không lưu |
+
+Cột `kafka_partition`, `kafka_offset` do job bronze gắn thêm. `serial_number` có thể NULL ở `ct.raw`;
+job silver gộp precert/cert theo `(issuer_cn, serial_number)` và bỏ qua bản ghi thiếu serial khỏi phép gộp (dùng `sha256` làm khoá thay thế).
+
 ## Giả định cần P2 xác nhận
 
-`bronze.ct_certs` dựa trên định dạng *lite* của CertStream (`leaf_cert.all_domains`, `subject`, `issuer`, `serial_number`, `not_before`, `not_after`, `fingerprint`/`sha256`, `update_type`, `cert_index`, `source`) cộng các trường collector gắn thêm (`seen_ts`, `collector_id`). Khi `contracts/kafka/ct.raw` có schema chính thức, đối chiếu và sửa file này cho khớp.
 Bảng `silver.enrichment` do P2 ghi; cột trong file là đề xuất của P4 theo nhu cầu đọc của `batch_graph`, P2 chỉnh nếu cần.
