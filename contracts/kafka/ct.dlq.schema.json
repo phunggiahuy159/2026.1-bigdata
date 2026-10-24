@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ct.dlq.schema.json",
+  "title": "ct.dlq",
+  "description": "Bản ghi không parse được hoặc không qua kiểm tra schema ct.raw. Giữ 7 ngày. Không để mất im lặng. Ghi: P2. Đọc: P2. Key: sha256 nếu lấy được, ngược lại bỏ trống.",
+  "type": "object",
+  "required": ["seen_ts", "collector_id", "error_type", "error_message", "payload"],
+  "additionalProperties": true,
+  "properties": {
+    "seen_ts": { "type": "integer", "description": "UTC mili giây khi collector nhận bản ghi." },
+    "collector_id": { "type": "string", "minLength": 1 },
+    "error_type": {
+      "type": "string",
+      "enum": ["invalid_json", "missing_field", "invalid_field", "other"]
+    },
+    "error_message": { "type": "string" },
+    "payload": {
+      "type": "string",
+      "maxLength": 65536,
+      "description": "Nội dung gốc dạng văn bản, cắt ở 64 KiB."
+    },
+    "payload_truncated": { "type": "boolean", "default": false }
+  }
+}
