@@ -46,6 +46,18 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
    Chấm lại cùng `score_date` ghi lại cùng giá trị (idempotent); `score_date` cũ hơn không đổi gì; cùng `score_date` thì `scored_ts` lớn hơn thắng. Không cần bắt E11000. Hợp đồng này áp dụng cho mọi bên ghi vào `domains`, kể cả `speed` của P3 nếu P3 cần chống ghi lùi (so `speed.updated_ts` tương tự).
 4. Domain chưa có `batch` (mới xuất hiện sau lần chấm cuối) chỉ có `speed`; ứng dụng hiển thị điểm speed và đánh dấu "chưa chấm batch".
 
+## Vòng đời `campaigns`
+
+`campaigns` chỉ giữ chiến dịch của lần chạy `run_date` **mới nhất** của `gold.campaigns`. Mỗi lần job P5 đồng bộ `run_date = D`:
+
+1. Nếu `D` nhỏ hơn `run_date` lớn nhất đang có trong collection thì bỏ qua (chạy lại ngày cũ không làm lùi dữ liệu).
+2. Với mỗi chiến dịch của `D`: `replaceOne({_id: campaign_id}, doc, upsert=True)`.
+3. Sau khi xong bước 2: `deleteMany({run_date: {$lt: D}})`, xoá chiến dịch đã gộp, tách hoặc biến mất.
+4. Lúc đọc, ứng dụng vẫn lọc `run_date` = giá trị lớn nhất để không thấy trạng thái nửa vời giữa bước 2 và 3.
+
+`domains.batch.campaign_id` được đặt lại (kể cả `null`) trong cùng lần chấm theo quy tắc ghi cả khối.
+`campaign_id` có ổn định giữa các lần chạy hay không là việc của P4 (`contracts/iceberg/gold.campaigns.sql`, PR riêng); nếu id đổi khi cụm đổi thì quy tắc trên vẫn đúng, chỉ là liên kết lịch sử theo id bị đứt.
+
 ## Ghi chú
 
 - `alerts` có TTL 30 ngày trên `created_at` (bản xem nhanh; bản đầy đủ nằm ở Kafka/Iceberg). `created_at` **bắt buộc là BSON Date**: TTL index bỏ qua document có trường là chuỗi hay số nên sẽ không bao giờ xoá. Người ghi (P3) chuyển `alert_ts` (mili giây) sang Date, ví dụ `datetime.fromtimestamp(alert_ts / 1000, tz=UTC)`.

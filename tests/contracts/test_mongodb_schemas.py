@@ -121,3 +121,8 @@ def test_batch_block_always_carries_nullable_links():
     for name in ("campaign_id", "anomaly_cluster"):
         assert name in batch["required"]
         assert "null" in batch["properties"][name]["type"]
+
+
+def test_readme_documents_campaign_cleanup_by_run_date():
+    readme = (MONGO / "README.md").read_text(encoding="utf-8")
+    assert "deleteMany({run_date: {$lt: D}})" in readme
