@@ -8,91 +8,110 @@
 #   aliases           biến thể viết tắt / cách gọi thông dụng
 #   Keyword/alias ngắn (< 5 ký tự) chỉ nên khớp nguyên token; ghi chú ở note nếu dễ nhiễu.
 #   brand_id dùng làm key Kafka alerts.v1.brand_id, Mongo domains.brand_id, Redis cnt:{brand}:{minute}
-#   verified          false = domain/từ khoá soạn từ kiến thức sẵn có, CHƯA kiểm lại
-#                     (không fetch site theo luật nhóm); true khi đã đối chiếu nguồn công khai
-#   note              chỗ chưa chắc cần người kiểm
+#   verified          true = official_domains đã đối chiếu nguồn công khai (trang chính chủ, Wikipedia,
+#                      cơ quan nhà nước hoặc danh bạ hội viên Hiệp hội Ngân hàng) và ghi ở `source`;
+#                      false = chưa xác nhận hết, bắt buộc có `note` nói chỗ cần kiểm
+#   source            URL nguồn chính của lần xác minh (bắt buộc khi verified: true)
+#   note              chỗ chưa chắc, domain đã bỏ/chưa thêm và lý do
+#   Xác minh bằng tìm kiếm web, chỉ mở trang chính chủ hoặc Wikipedia; không mở domain lấy từ luồng chứng chỉ.
 version: 1
 brands:
   # ---- Ngân hàng ----
   - brand_id: vietcombank
     name: Vietcombank
     category: bank
-    official_domains: [vietcombank.com.vn, vietcombank.com]
+    official_domains: [vietcombank.com.vn]
     keywords: [vietcombank, vcb, digibank]
     aliases: [vcb]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vietcombank
+    note: "bỏ vietcombank.com (không có nguồn)"
   - brand_id: vietinbank
     name: VietinBank
     category: bank
     official_domains: [vietinbank.vn]
     keywords: [vietinbank, ipay]
     aliases: [ctg, vtb]
-    verified: false
-    note: "vietinbank.com.vn có thể là domain cũ/phụ; cần kiểm"
+    verified: true
+    source: https://vnba.org.vn/vi/vietinbank-canh-bao-lua-dao-gia-mao-tin-nhan-sms-7612.htm
+    note: "cảnh báo của VietinBank: chỉ dùng một website vietinbank.vn"
   - brand_id: bidv
     name: BIDV
     category: bank
-    official_domains: [bidv.com.vn, bidv.vn]
+    official_domains: [bidv.com.vn]
     keywords: [bidv, smartbanking]
     aliases: [bidv]
-    verified: false
-    note: "bidv.vn chưa chắc là domain chính thức"
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-dau-tu-va-phat-trien-viet-nam--bidv-86.htm
+    note: "bỏ bidv.vn (không có nguồn)"
   - brand_id: agribank
     name: Agribank
     category: bank
     official_domains: [agribank.com.vn]
     keywords: [agribank, ebanking]
     aliases: [vbard]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-nong-nghiep-va-phat-trien-nong-thon-viet-nam-agribank-7.htm?page=16
+    note: "Wikipedia EN ghi agribank.com, chưa có nguồn khác nên không thêm"
   - brand_id: techcombank
     name: Techcombank
     category: bank
-    official_domains: [techcombank.com, techcombank.com.vn]
+    official_domains: [techcombank.com]
     keywords: [techcombank, tcb]
     aliases: [tcb]
-    verified: false
+    verified: true
+    source: https://techcombank.com/thong-tin/thong-bao/huong-dan-phong-tranh-cac-hinh-thuc-lua-dao-tai-chinh
+    note: "bỏ techcombank.com.vn: thông báo của Techcombank nói chỉ techcombank.com là website chính thức"
   - brand_id: mbbank
     name: MB Bank
     category: bank
     official_domains: [mbbank.com.vn]
     keywords: [mbbank, mbbankvn, militarybank]
     aliases: [mb, mbb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-quan-doi--mb-26.htm
   - brand_id: acb
     name: ACB
     category: bank
     official_domains: [acb.com.vn]
     keywords: [acb, acbonline]
     aliases: [acb]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Asia_Commercial_Bank
   - brand_id: vpbank
     name: VPBank
     category: bank
     official_domains: [vpbank.com.vn]
     keywords: [vpbank, vpbankneo]
     aliases: [vpb]
-    verified: false
+    verified: true
+    source: https://www.vpbank.com.vn/tin-tuc/tin-vpbank/2021/ds-cac-website-va-fanpage-do-vpbank-van-hanh-va-quan-ly
+    note: "vpbank.com là ngân hàng khác, không thêm"
   - brand_id: tpbank
     name: TPBank
     category: bank
-    official_domains: [tpb.vn, tpbank.com.vn]
+    official_domains: [tpb.vn]
     keywords: [tpbank, tpb]
     aliases: [tpb]
-    verified: false
+    verified: true
+    source: https://tpb.vn/en
+    note: "bỏ tpbank.com.vn (không có nguồn)"
   - brand_id: sacombank
     name: Sacombank
     category: bank
     official_domains: [sacombank.com.vn]
     keywords: [sacombank, stb]
     aliases: [stb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-thuong-mai-co-phan-sai-gon-thuong-tin--sacombank-31.htm
   - brand_id: hdbank
     name: HDBank
     category: bank
     official_domains: [hdbank.com.vn]
     keywords: [hdbank]
     aliases: [hdb]
-    verified: false
+    verified: true
+    source: https://cdn.hdbank.com.vn/hdbank/bctn/2024/thong-tin-chung-EN.html
   - brand_id: vib
     name: VIB
     category: bank
@@ -100,48 +119,55 @@ brands:
     keywords: [vib, myvib]
     aliases: [vib]
     verified: false
+    note: "chưa kiểm được nguồn (search bị giới hạn); cần kiểm"
   - brand_id: shb
     name: SHB
     category: bank
     official_domains: [shb.com.vn]
     keywords: [shb]
     aliases: [shb]
-    verified: false
+    verified: true
+    source: https://www.shb.com.vn/BCTN2024/pdf/Thuyet-minh-BCTN-SHB-2024.pdf
   - brand_id: ocb
     name: OCB
     category: bank
     official_domains: [ocb.com.vn]
     keywords: [ocb, ocbomni]
     aliases: [ocb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-phuong-dong-ocb-25.htm
   - brand_id: msb
     name: MSB
     category: bank
     official_domains: [msb.com.vn]
     keywords: [msb, maritimebank]
     aliases: [msb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-hang-hai-viet-nam-msb-19.htm
   - brand_id: eximbank
     name: Eximbank
     category: bank
     official_domains: [eximbank.com.vn]
     keywords: [eximbank, exim]
     aliases: [eib]
-    verified: false
+    verified: true
+    source: https://eximbank.com.vn/en/about-us
   - brand_id: scb
     name: SCB
     category: bank
     official_domains: [scb.com.vn]
     keywords: [scb]
     aliases: [scb]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Sai_Gon_Joint_Stock_Commercial_Bank
   - brand_id: seabank
     name: SeABank
     category: bank
     official_domains: [seabank.com.vn]
     keywords: [seabank]
     aliases: [seab]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-dong-nam-a--seabank-18.htm
 
   # ---- Ví điện tử / thanh toán ----
   - brand_id: momo
@@ -150,15 +176,17 @@ brands:
     official_domains: [momo.vn]
     keywords: [momo, vimomo]
     aliases: [momo]
-    verified: false
+    verified: true
+    source: https://www.momo.vn/quy-che-hoat-dong-ung-dung-tmdt
   - brand_id: zalopay
     name: ZaloPay
     category: ewallet
     official_domains: [zalopay.vn]
     keywords: [zalopay, zalo]
     aliases: [zlp]
-    verified: false
-    note: "zalo.me là của Zalo (nhắn tin), không phải ZaloPay; cần quyết có gộp không"
+    verified: true
+    source: https://docs.zalopay.vn/en/v2/docs/gateway/guide.html
+    note: "zalo.me là Zalo nhắn tin, không gộp"
   - brand_id: viettelmoney
     name: Viettel Money
     category: ewallet
@@ -166,7 +194,7 @@ brands:
     keywords: [viettelmoney, viettelpay]
     aliases: [vtmoney]
     verified: false
-    note: "tên cũ Viettel Pay; domain cần kiểm"
+    note: "chưa có nguồn chính chủ/Wikipedia cho viettelmoney.vn; cần kiểm"
   - brand_id: shopeepay
     name: ShopeePay
     category: ewallet
@@ -174,6 +202,7 @@ brands:
     keywords: [shopeepay, airpay]
     aliases: [spay]
     verified: false
+    note: "không thấy nguồn nêu shopeepay.vn; ShopeePay chủ yếu chạy trong app/shopee.vn; cân nhắc bỏ"
   - brand_id: vnpay
     name: VNPAY
     category: ewallet
@@ -181,6 +210,7 @@ brands:
     keywords: [vnpay, vnpayqr]
     aliases: [vnpay]
     verified: false
+    note: "không tìm thấy nguồn nêu domain; cần kiểm"
 
   # ---- Sàn thương mại điện tử ----
   - brand_id: shopee
@@ -189,14 +219,18 @@ brands:
     official_domains: [shopee.vn]
     keywords: [shopee, shopeevn]
     aliases: [shopee]
-    verified: false
+    verified: true
+    source: https://shopee.vn/blog/shopee-cua-nuoc-nao/
+    note: "shopee.com là domain toàn cầu, chưa thêm"
   - brand_id: lazada
     name: Lazada
     category: ecommerce
     official_domains: [lazada.vn]
     keywords: [lazada, lazadavn]
     aliases: [laz]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Lazada
+    note: "lazada.com là site tập đoàn, chưa thêm"
   - brand_id: tiki
     name: Tiki
     category: ecommerce
@@ -204,6 +238,7 @@ brands:
     keywords: [tiki, tikivn]
     aliases: [tiki]
     verified: false
+    note: "chỉ có ZoomInfo; cần kiểm trang chính chủ"
   - brand_id: sendo
     name: Sendo
     category: ecommerce
@@ -211,6 +246,8 @@ brands:
     keywords: [sendo]
     aliases: [sendo]
     verified: false
+    source: https://fintechnews.sg/134340/vietnam/sendo-shuts-down-online-grocery-platform-exits-e-commerce/
+    note: "sàn TMĐT đã ngừng từ 4/2025 (Sendo Farm cũng dừng); domain có thể bị chiếm lại; nhóm quyết định giữ hay bỏ"
   - brand_id: tiktokshop
     name: TikTok Shop
     category: ecommerce
@@ -218,71 +255,80 @@ brands:
     keywords: [tiktok, tiktokshop]
     aliases: [ttshop]
     verified: false
-    note: "chưa chắc domain Shop VN riêng (shop.tiktok.com là subdomain của tiktok.com)"
+    note: "không có nguồn chính chủ cho domain riêng của TikTok Shop; seller*.tiktok.com là subdomain của tiktok.com"
 
   # ---- Nhà mạng / viễn thông ----
   - brand_id: viettel
     name: Viettel
     category: telecom
-    official_domains: [viettel.vn, viettel.com.vn]
+    official_domains: [viettel.com.vn, vietteltelecom.vn, viettel.vn]
     keywords: [viettel, viettelvn, myviettel]
     aliases: [vtl]
     verified: false
+    source: https://en.wikipedia.org/wiki/Viettel
+    note: "thêm vietteltelecom.vn (Wikipedia); viettel.vn chỉ có nguồn gián tiếp, cần kiểm"
   - brand_id: vinaphone
     name: VinaPhone
     category: telecom
     official_domains: [vinaphone.com.vn]
     keywords: [vinaphone]
     aliases: [vina]
-    verified: false
-    note: "vnpt.vn / vnpt.com.vn thuộc tập đoàn VNPT, đã tách thành brand vnpt"
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vinaphone
   - brand_id: mobifone
     name: MobiFone
     category: telecom
     official_domains: [mobifone.vn]
     keywords: [mobifone]
     aliases: [mobi]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/MobiFone
   - brand_id: vietnamobile
     name: Vietnamobile
     category: telecom
     official_domains: [vietnamobile.com.vn]
     keywords: [vietnamobile]
     aliases: [vnmb]
-    verified: false
+    verified: true
+    source: https://www.vietnamobile.com.vn/en/product/about-vietnamobile/introduction
   - brand_id: fpt
     name: FPT Telecom
     category: telecom
-    official_domains: [fpt.com.vn, fpt.vn]
+    official_domains: [fpt.vn]
     keywords: [fpt, fpttelecom]
     aliases: [fpt]
-    verified: false
-    note: "fpt.vn chưa chắc"
+    verified: true
+    source: https://vi.wikipedia.org/wiki/FPT_Telecom
+    note: "bỏ fpt.com.vn (không có nguồn gắn với FPT Telecom)"
 
   # ---- Dịch vụ công / cơ quan nhà nước ----
   - brand_id: vneid
     name: VNeID (định danh điện tử)
     category: gov
-    official_domains: [vneid.gov.vn]
+    official_domains: [vneid.gov.vn, dinhdanhdientu.gov.vn]
     keywords: [vneid, dinhdanh, dinhdanhdientu]
     aliases: [vneid]
-    verified: false
+    verified: true
+    source: https://vietyen.bacgiang.gov.vn/documents/22791/18199778/1697035935604_So-Tay-VNeID.pdf/7410959b-0af1-491f-a1b6-2cc4436935ba
+    note: "thêm dinhdanhdientu.gov.vn (sổ tay VNeID của Bộ Công an)"
   - brand_id: thue
     name: Tổng cục Thuế (thuế điện tử)
     category: gov
     official_domains: [gdt.gov.vn]
     keywords: [gdt, thue, thuedientu, hoantienthue]
     aliases: [tct]
-    verified: false
-    note: "thuedientu.gdt.gov.vn là subdomain; mô hình eTLD+1 của gov.vn là gdt.gov.vn"
+    verified: true
+    source: https://vi.wikipedia.org/wiki/T%E1%BB%95ng_c%E1%BB%A5c_Thu%E1%BA%BF
+    note: "từ 1/3/2025 là Cục Thuế, domain chưa thấy đổi"
   - brand_id: bhxh
     name: Bảo hiểm xã hội Việt Nam
     category: gov
-    official_domains: [baohiemxahoi.gov.vn, vssid.vn]
+    official_domains: [baohiemxahoi.gov.vn]
     keywords: [bhxh, baohiemxahoi, vssid, baohiem]
     aliases: [bhxh, vss]
-    verified: false
-    note: "vssid.vn cần kiểm có phải domain chính thức của ứng dụng VssID"
+    verified: true
+    source: https://baohiemxahoi.gov.vn:4545/File_Server_BHXH/documents/3717_BHXH_CNTT.pdf
+    note: "bỏ vssid.vn (không có nguồn xác nhận)"
   - brand_id: dichvucong
     name: Cổng dịch vụ công quốc gia
     category: gov
@@ -290,6 +336,7 @@ brands:
     keywords: [dichvucong, dvc]
     aliases: [dvcqg]
     verified: false
+    note: "nguồn chỉ là trang tổng hợp luật; cần kiểm"
   - brand_id: csgt
     name: Cục CSGT (phạt nguội)
     category: gov
@@ -297,15 +344,15 @@ brands:
     keywords: [csgt, phatnguoi, tracuuphat]
     aliases: [csgt]
     verified: false
-    note: "csgt.vn là cổng tra cứu phạt nguội; cần kiểm"
+    note: "nguồn chỉ là báo; cần kiểm csgt.vn"
   - brand_id: evn
     name: EVN (điện lực)
     category: gov
     official_domains: [evn.com.vn]
     keywords: [evn, tiendien, evnhanoi, evnspc, evnhcmc]
     aliases: [evn]
-    verified: false
-    note: "EVN là DN nhà nước, xếp gov tạm"
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vietnam_Electricity
 
   # ---- Giao vận ----
   - brand_id: ghn
@@ -314,7 +361,8 @@ brands:
     official_domains: [ghn.vn]
     keywords: [ghn, giaohangnhanh]
     aliases: [ghn]
-    verified: false
+    verified: true
+    source: https://ghn.vn/blogs/thong-tin-tai-khoan/lam-sao-de-dang-ky-tai-khoan
   - brand_id: ghtk
     name: Giao Hàng Tiết Kiệm
     category: logistics
@@ -322,20 +370,23 @@ brands:
     keywords: [ghtk, giaohangtietkiem]
     aliases: [ghtk]
     verified: false
+    note: "nguồn chỉ là blog bên thứ ba; ghtk.vn xuất hiện qua i.ghtk.vn; cần kiểm"
   - brand_id: viettelpost
     name: Viettel Post
     category: logistics
-    official_domains: [viettelpost.vn, viettelpost.com.vn]
+    official_domains: [viettelpost.com.vn, viettelpost.vn]
     keywords: [viettelpost, vtp]
     aliases: [vtp]
     verified: false
+    note: "chỉ có nguồn bên thứ ba; viettelpost.com.vn chắc hơn; cần kiểm"
   - brand_id: vnpost
     name: Bưu điện Việt Nam (VNPost)
     category: logistics
     official_domains: [vnpost.vn]
     keywords: [vnpost, buudien]
     aliases: [vnpost]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vietnam_Post
   - brand_id: jtexpress
     name: J&T Express
     category: logistics
@@ -343,21 +394,24 @@ brands:
     keywords: [jtexpress, jandt]
     aliases: [jnt]
     verified: false
+    note: "chỉ có blog bên thứ ba nêu jtexpress.vn; cần kiểm trang chính chủ"
   - brand_id: spx
     name: SPX Express
     category: logistics
     official_domains: [spx.vn]
     keywords: [spx, spxexpress, shopeeexpress]
     aliases: [spx]
-    verified: false
+    verified: true
+    source: https://spx.vn/en
+    note: "spxexpress.com là domain email hỗ trợ, chưa thêm"
   - brand_id: ninjavan
     name: Ninja Van
     category: logistics
     official_domains: [ninjavan.co]
     keywords: [ninjavan]
     aliases: [nv]
-    verified: false
-    note: "ninjavan.co hay ninjavan.vn? cần kiểm"
+    verified: true
+    source: https://www.ninjavan.co/en-vn/company/about-us
 
   # ---- Bổ sung (tuần 1): ngân hàng, tài chính, ví, TMĐT, dịch vụ công, giao vận, game, bảo hiểm, dịch vụ ----
   - brand_id: lpbank
@@ -366,73 +420,80 @@ brands:
     official_domains: [lpbank.com.vn]
     keywords: [lpbank, lienvietpostbank]
     aliases: [lpb]
-    verified: false
-    note: "đổi tên từ LienVietPostBank; domain cũ lienvietpostbank.com.vn có thể còn dùng"
+    verified: true
+    source: https://lpbank.com.vn/wp-content/uploads/2024/09/Thoa-thuan-mo-va-su-dung-ung-dung-LPBank.pdf
   - brand_id: vietabank
     name: "VietABank"
     category: bank
     official_domains: [vietabank.com.vn]
     keywords: [vietabank]
     aliases: [vab]
-    verified: false
+    verified: true
+    source: https://www.vietabank.com.vn/Uploads/Download/Investors/Bao%20Cao%20Thuong%20Nien_2018.pdf
   - brand_id: namabank
     name: "Nam A Bank"
     category: bank
     official_domains: [namabank.com.vn]
     keywords: [namabank, nama]
     aliases: [nab]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-thuong-mai-co-phan-nam-a--nam-a-bank-23.htm
   - brand_id: pvcombank
     name: "PVcomBank"
     category: bank
     official_domains: [pvcombank.com.vn]
     keywords: [pvcombank]
     aliases: [pvcb]
-    verified: false
+    verified: true
+    source: https://www.pvcombank.com.vn/static/Promotions/The%20le%20CTKM%20mo%20tai%20khoan%20eKYC.pdf
   - brand_id: bacabank
     name: "Bac A Bank"
     category: bank
     official_domains: [baca-bank.vn]
     keywords: [bacabank, baca]
     aliases: [bab]
-    verified: false
-    note: "chưa chắc baca-bank.vn hay bacabank.com.vn"
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-bac-a--bac-a-bank-15.htm
   - brand_id: abbank
     name: "ABBANK"
     category: bank
     official_domains: [abbank.vn]
     keywords: [abbank]
     aliases: [abb]
-    verified: false
+    verified: true
+    source: https://abbank.vn/uploads/files/2020/05/25/20190419-abb-bctn-2018-vn-web-final-20190419133056.pdf
   - brand_id: ncb
     name: "NCB (Ngân hàng Quốc Dân)"
     category: bank
     official_domains: [ncb-bank.vn]
     keywords: [ncb, ncbbank]
     aliases: [ncb]
-    verified: false
+    verified: true
+    source: https://ncb-bank.vn/en/about
   - brand_id: vietbank
     name: "VietBank"
     category: bank
     official_domains: [vietbank.com.vn]
     keywords: [vietbank]
     aliases: [vbb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-viet-nam-thuong-tin--vietbank-38.htm
   - brand_id: kienlongbank
     name: "KienlongBank"
     category: bank
     official_domains: [kienlongbank.com]
     keywords: [kienlongbank, kienlong]
     aliases: [klb]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-kien-long-kienlongbank-20.htm
   - brand_id: bvbank
     name: "BVBank (Bản Việt)"
     category: bank
     official_domains: [bvbank.net.vn]
     keywords: [bvbank, banviet]
     aliases: [bvb]
-    verified: false
-    note: "chưa chắc domain hiện hành"
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/ngan-hang-tmcp-ban-viet--bvbank-14.htm
   - brand_id: cake
     name: "Cake by VPBank"
     category: bank
@@ -440,7 +501,7 @@ brands:
     keywords: [cakebank, cakevpbank]
     aliases: [cake]
     verified: false
-    note: "keyword 'cake' quá chung nên không dùng"
+    note: "chỉ có App Store; cần kiểm cake.vn"
   - brand_id: timo
     name: "Timo"
     category: bank
@@ -448,14 +509,15 @@ brands:
     keywords: [timo, timobank]
     aliases: [timo]
     verified: false
-    note: "Timo ngừng hợp tác BVBank; domain cần kiểm"
+    note: "chỉ có App Store; có thể đã đổi chủ/tên thương hiệu (Timo Credit); cần kiểm"
   - brand_id: hsbc_vn
     name: "HSBC Việt Nam"
     category: bank
     official_domains: [hsbc.com.vn]
     keywords: [hsbc, hsbcvn]
     aliases: [hsbc]
-    verified: false
+    verified: true
+    source: https://www.about.hsbc.com.vn/hsbc-in-vietnam
   - brand_id: shinhan_vn
     name: "Shinhan Bank Việt Nam"
     category: bank
@@ -463,20 +525,23 @@ brands:
     keywords: [shinhan, shinhanbank]
     aliases: [shinhanvn]
     verified: false
+    note: "chỉ có nguồn danh bạ bên thứ ba; cần kiểm"
   - brand_id: fecredit
     name: "FE Credit"
     category: finance
     official_domains: [fecredit.com.vn]
     keywords: [fecredit]
     aliases: [fec]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/cong-ty-tai-chinh-tnhh-ngan-hang-viet-nam-thinh-vuong-smbc--fe-credit-43.htm
   - brand_id: homecredit
     name: "Home Credit Việt Nam"
     category: finance
     official_domains: [homecredit.vn]
     keywords: [homecredit]
     aliases: [hcvn]
-    verified: false
+    verified: true
+    source: https://www.homecredit.vn/gioi-thieu
   - brand_id: mcredit
     name: "Mcredit"
     category: finance
@@ -484,6 +549,7 @@ brands:
     keywords: [mcredit]
     aliases: [mc]
     verified: false
+    note: "không tìm được nguồn cho mcredit.com.vn; cần kiểm"
   - brand_id: hdsaison
     name: "HD SAISON"
     category: finance
@@ -491,6 +557,7 @@ brands:
     keywords: [hdsaison]
     aliases: [hds]
     verified: false
+    note: "nguồn chỉ là báo (vneconomy); cần kiểm"
   - brand_id: moca
     name: "Moca (Grab)"
     category: ewallet
@@ -498,29 +565,33 @@ brands:
     keywords: [moca, mocavn]
     aliases: [moca]
     verified: false
-    note: "ví Moca đã gộp vào Grab; domain cần kiểm"
+    source: https://diendandoanhnghiep.vn/vi-sao-vi-dien-tu-moca-ngung-hoat-dong-264261.html
+    note: "ví Moca ngừng dịch vụ từ 1/7/2024; không có nguồn cho moca.vn; nhóm quyết định giữ hay bỏ"
   - brand_id: payoo
     name: "Payoo"
     category: ewallet
     official_domains: [payoo.vn]
     keywords: [payoo]
     aliases: [payoo]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/cong-ty-co-phan-dich-vu-truc-tuyen-cong-dong-viet--vietunion--payoo-117.htm
   - brand_id: onepay
     name: "OnePay"
     category: ewallet
     official_domains: [onepay.vn]
     keywords: [onepay]
     aliases: [onepay]
-    verified: false
+    verified: true
+    source: https://vnba.org.vn/vi/vnba/member/cong-ty-co-phan-thuong-mai-dich-vu-truc-tuyen-onepay--onepay-59.htm
   - brand_id: napas
     name: "NAPAS"
     category: ewallet
     official_domains: [napas.com.vn]
     keywords: [napas, vietqr]
     aliases: [napas]
-    verified: false
-    note: "vietqr.io/vietqr.vn là dịch vụ liên quan, chưa thêm"
+    verified: true
+    source: https://en.napas.com.vn/napas-fastfund-247-with-vietqr-code-service
+    note: "vietqr.net được trang NAPAS nhắc nhưng chưa thêm"
   - brand_id: vnptpay
     name: "VNPT Pay"
     category: ewallet
@@ -528,79 +599,89 @@ brands:
     keywords: [vnptpay]
     aliases: [vnptpay]
     verified: false
+    note: "nguồn chỉ là báo (tuoitre.vn); cần kiểm"
   - brand_id: paypal
     name: "PayPal"
     category: ewallet
     official_domains: [paypal.com]
     keywords: [paypal]
     aliases: [pp]
-    verified: false
-    note: "thương hiệu quốc tế, thêm vì bị mạo danh nhiều"
+    verified: true
+    source: https://en.wikipedia.org/wiki/PayPal
   - brand_id: thegioididong
     name: "Thế Giới Di Động"
     category: ecommerce
     official_domains: [thegioididong.com]
     keywords: [thegioididong, tgdd]
     aliases: [tgdd]
-    verified: false
+    verified: true
+    source: https://www.thegioididong.com/tos
   - brand_id: dienmayxanh
     name: "Điện Máy Xanh"
     category: ecommerce
     official_domains: [dienmayxanh.com]
     keywords: [dienmayxanh, dmx]
     aliases: [dmx]
-    verified: false
+    verified: true
+    source: https://www.dienmayxanh.com/kinh-nghiem-hay/ky-niem-dien-may-xanh-chang-duong-10-nam-voi-1000-1226980
   - brand_id: bachhoaxanh
     name: "Bách Hoá Xanh"
     category: ecommerce
     official_domains: [bachhoaxanh.com]
     keywords: [bachhoaxanh, bhx]
     aliases: [bhx]
-    verified: false
+    verified: true
+    source: https://www.bachhoaxanh.com/kinh-nghiem-hay/bach-hoa-xanh/tag
   - brand_id: fptshop
     name: "FPT Shop"
     category: ecommerce
     official_domains: [fptshop.com.vn]
     keywords: [fptshop]
     aliases: [fptshop]
-    verified: false
+    verified: true
+    source: https://fptshop.com.vn/cua-hang/cua-hang-fpt-shop-129-nguyen-thi-minh-khai
   - brand_id: cellphones
     name: "CellphoneS"
     category: ecommerce
     official_domains: [cellphones.com.vn]
     keywords: [cellphones]
     aliases: [cps]
-    verified: false
+    verified: true
+    source: https://cellphones.com.vn/gioi-thieu-cellphones
   - brand_id: nguyenkim
     name: "Nguyễn Kim"
     category: ecommerce
     official_domains: [nguyenkim.com]
     keywords: [nguyenkim]
     aliases: [nk]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Nguyenkim_Shopping_Center
   - brand_id: chotot
     name: "Chợ Tốt"
     category: ecommerce
     official_domains: [chotot.com]
     keywords: [chotot]
     aliases: [ct]
-    verified: false
+    verified: true
+    source: https://www.chotot.com/kinh-nghiem/co-do-tot-ban-la-chot.html
+    note: "một số danh bạ ghi chotot.vn, mâu thuẫn trang chính chủ nên không thêm"
   - brand_id: lotte_vn
     name: "Lotte Mart Việt Nam"
     category: ecommerce
-    official_domains: [lottemart.vn]
+    official_domains: [lottemart.com.vn, lottemart.vn]
     keywords: [lottemart, lotte]
     aliases: [lotte]
     verified: false
-    note: "chưa chắc domain"
+    source: https://goldendragon.vneconomy.vn/doanh-nghiep-129-cong-ty-co-phan-trung-tam-thuong-mai-lotte-viet-nam.html
+    note: "thêm lottemart.com.vn; chỉ có nguồn bên thứ ba, lottemart.vn mâu thuẫn giữa các nguồn; cần kiểm"
   - brand_id: winmart
     name: "WinMart"
     category: ecommerce
     official_domains: [winmart.vn]
     keywords: [winmart, wincommerce]
     aliases: [wm]
-    verified: false
-    note: "chưa chắc domain"
+    verified: true
+    source: https://vi.wikipedia.org/wiki/WinMart
   - brand_id: vnpt
     name: "VNPT"
     category: telecom
@@ -608,28 +689,32 @@ brands:
     keywords: [vnpt, vnptmedia]
     aliases: [vnpt]
     verified: false
+    source: https://en.wikipedia.org/wiki/Vietnam_Posts_and_Telecommunications_Group
+    note: "vnpt.com.vn có nguồn Wikipedia; vnpt.vn chỉ có trong văn bản Nghị định 25/2016, chưa xác nhận còn hoạt động"
   - brand_id: sbv
     name: "Ngân hàng Nhà nước Việt Nam"
     category: gov
     official_domains: [sbv.gov.vn]
     keywords: [sbv, nhnn, nganhangnhanuoc]
     aliases: [nhnn]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/State_Bank_of_Vietnam
   - brand_id: mps
     name: "Bộ Công an"
     category: gov
-    official_domains: [mps.gov.vn]
+    official_domains: [mps.gov.vn, bocongan.gov.vn]
     keywords: [bocongan, mps, congan]
     aliases: [bca]
-    verified: false
-    note: "chưa chắc domain cổng chính; có thể là bocongan.gov.vn"
+    verified: true
+    source: https://hatinh.gov.vn/vi/bai-viet/bo-cong-an-canh-bao-thu-doan-mao-danh-cong-thong-tin-dien-tu-cua-bo
   - brand_id: chinhphu
     name: "Cổng thông tin Chính phủ"
     category: gov
     official_domains: [chinhphu.vn]
     keywords: [chinhphu]
     aliases: [cp]
-    verified: false
+    verified: true
+    source: https://chinhphu.vn/ban-bien-tap-cong-ttdt-chinh-phu-70576
   - brand_id: hai_quan
     name: "Tổng cục Hải quan"
     category: gov
@@ -637,14 +722,15 @@ brands:
     keywords: [haiquan, customs, tcnhq]
     aliases: [tchq]
     verified: false
+    note: "nguồn chỉ là báo (thoibaotaichinhvietnam.vn); cơ quan nay có thể là Cục Hải quan; cần kiểm"
   - brand_id: xuatnhapcanh
     name: "Cục Quản lý xuất nhập cảnh"
     category: gov
     official_domains: [xuatnhapcanh.gov.vn]
     keywords: [xuatnhapcanh, visa]
     aliases: [xnc]
-    verified: false
-    note: "chưa chắc domain"
+    verified: true
+    source: https://vi.wikipedia.org/wiki/C%E1%BB%A5c_Qu%E1%BA%A3n_l%C3%BD_xu%E1%BA%A5t_nh%E1%BA%ADp_c%E1%BA%A3nh_(Vi%E1%BB%87t_Nam)
   - brand_id: dangkiem
     name: "Cục Đăng kiểm Việt Nam"
     category: gov
@@ -652,7 +738,7 @@ brands:
     keywords: [dangkiem, vr]
     aliases: [dk]
     verified: false
-    note: "chưa chắc domain; keyword ngắn"
+    note: "nguồn chỉ là báo/blog; cần kiểm vr.org.vn"
   - brand_id: mic
     name: "Bộ Thông tin và Truyền thông"
     category: gov
@@ -660,7 +746,8 @@ brands:
     keywords: [mic, bttt, chuanhoathuebao]
     aliases: [bttt]
     verified: false
-    note: "chưa chắc: đã đổi tên/tổ chức lại bộ"
+    source: https://en.wikipedia.org/wiki/Ministry_of_Information_and_Communications_(Vietnam)
+    note: "bộ đã hợp nhất vào Bộ KH&CN từ 2/2025; chưa có nguồn cho domain cổng mới; nhóm quyết định giữ hay bỏ"
   - brand_id: dangkykinhdoanh
     name: "Cổng đăng ký doanh nghiệp quốc gia"
     category: gov
@@ -668,6 +755,7 @@ brands:
     keywords: [dangkykinhdoanh]
     aliases: [dkkd]
     verified: false
+    note: "chưa kiểm được nguồn; cơ quan quản lý đã sáp nhập vào Bộ Tài chính năm 2025"
   - brand_id: ahamove
     name: "Ahamove"
     category: logistics
@@ -675,6 +763,7 @@ brands:
     keywords: [ahamove]
     aliases: [aha]
     verified: false
+    note: "chỉ có App Store; cần kiểm"
   - brand_id: best_express
     name: "BEST Express"
     category: logistics
@@ -682,7 +771,7 @@ brands:
     keywords: [bestexpress, bestinc]
     aliases: [best]
     verified: false
-    note: "chưa chắc domain"
+    note: "chỉ có nguồn bên thứ ba ghi best-inc.vn; cần kiểm trang chính chủ"
   - brand_id: ntlogistics
     name: "Nhất Tín Logistics"
     category: logistics
@@ -690,21 +779,23 @@ brands:
     keywords: [ntlogistics, nhattin]
     aliases: [ntl]
     verified: false
+    note: "nguồn chỉ là case study/tuyển dụng bên thứ ba; cần kiểm"
   - brand_id: dhl
     name: "DHL"
     category: logistics
     official_domains: [dhl.com]
     keywords: [dhl, dhlexpress]
     aliases: [dhl]
-    verified: false
-    note: "keyword ngắn, chỉ khớp nguyên token"
+    verified: true
+    source: https://en.wikipedia.org/wiki/DHL
   - brand_id: fedex
     name: "FedEx"
     category: logistics
     official_domains: [fedex.com]
     keywords: [fedex]
     aliases: [fdx]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/FedEx
   - brand_id: ups
     name: "UPS"
     category: logistics
@@ -712,7 +803,7 @@ brands:
     keywords: [ups]
     aliases: [ups]
     verified: false
-    note: "keyword ngắn, chỉ khớp nguyên token; dễ nhiễu"
+    note: "chưa có nguồn chính chủ/Wikipedia trong lượt xác minh; keyword ngắn, dễ nhiễu"
   - brand_id: garena
     name: "Garena"
     category: game
@@ -720,6 +811,8 @@ brands:
     keywords: [garena, lienquan, freefire]
     aliases: [ff, lq]
     verified: false
+    source: https://en.wikipedia.org/wiki/Garena
+    note: "chưa có nguồn xác nhận garena.vn / garena.com; cần kiểm"
   - brand_id: vng
     name: "VNG (Zing)"
     category: game
@@ -727,7 +820,8 @@ brands:
     keywords: [vng, zingplay, zingspeed]
     aliases: [vng]
     verified: false
-    note: "zing.vn chưa chắc còn thuộc VNG"
+    source: https://en.wikipedia.org/wiki/VNG_Corporation
+    note: "vng.com.vn xác nhận (Wikipedia); zing.vn chỉ có nguồn bên thứ ba; cần kiểm"
   - brand_id: vtcgame
     name: "VTC Game"
     category: game
@@ -735,6 +829,7 @@ brands:
     keywords: [vtcgame, vtcmobile]
     aliases: [vtc]
     verified: false
+    note: "chỉ thấy subdomain napthe.vtcgame.vn qua trang MoMo; VTC Game/VTC Mobile có thể là hai thực thể; cần kiểm"
   - brand_id: gosu
     name: "GOSU"
     category: game
@@ -742,71 +837,80 @@ brands:
     keywords: [gosu, gosugame]
     aliases: [gosu]
     verified: false
+    note: "nguồn chỉ là trang nạp thẻ/hồ sơ bên thứ ba (gosucorp.vn chưa thêm); cần kiểm"
   - brand_id: steam
     name: "Steam (Valve)"
     category: game
     official_domains: [steampowered.com, steamcommunity.com]
     keywords: [steam, steampowered, steamcommunity]
     aliases: [steam]
-    verified: false
-    note: "thương hiệu quốc tế, bị mạo danh nhiều"
+    verified: true
+    source: https://en.wikipedia.org/wiki/Steam_(service)
   - brand_id: roblox
     name: "Roblox"
     category: game
     official_domains: [roblox.com]
     keywords: [roblox, robux]
     aliases: [rbx]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Roblox_Corporation
   - brand_id: hoyoverse
     name: "HoYoverse (Genshin)"
     category: game
     official_domains: [hoyoverse.com, mihoyo.com]
     keywords: [hoyoverse, genshin, mihoyo]
     aliases: [hoyo]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/MiHoYo
   - brand_id: riotgames
     name: "Riot Games"
     category: game
     official_domains: [riotgames.com]
     keywords: [riotgames, valorant, leagueoflegends]
     aliases: [riot]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Riot_Games
   - brand_id: baoviet
     name: "Bảo Việt"
     category: insurance
     official_domains: [baoviet.com.vn]
     keywords: [baoviet]
     aliases: [bv]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Bao_Viet_Holdings
+    note: "baovietonline.com.vn là kênh bán online, chưa thêm"
   - brand_id: prudential_vn
     name: "Prudential Việt Nam"
     category: insurance
     official_domains: [prudential.com.vn]
     keywords: [prudential]
     aliases: [pru]
-    verified: false
+    verified: true
+    source: https://www.prudential.com.vn/export/sites/prudential-vn/vi/.thu-vien/pdf/ve-prudential/prudential-bao-cao-ket-qua-kinh-doanh-2021.pdf
   - brand_id: manulife_vn
     name: "Manulife Việt Nam"
     category: insurance
     official_domains: [manulife.com.vn]
     keywords: [manulife]
     aliases: [mnl]
-    verified: false
+    verified: true
+    source: https://manulife.com.vn/content/dam/insurance/vn/documents/quy-mo-manulife/thong-tin-cong-ty-MIMV.pdf
   - brand_id: aia_vn
     name: "AIA Việt Nam"
     category: insurance
     official_domains: [aia.com.vn]
     keywords: [aiavietnam, aiavn]
     aliases: [aia]
-    verified: false
-    note: "keyword 'aia' quá ngắn nên chỉ để dạng dài"
+    verified: true
+    source: https://www.aia.com.vn/content/dam/vn/vi/docs/our-products/An-Phuc-Hung-Loc.pdf
   - brand_id: daiichi_vn
     name: "Dai-ichi Life Việt Nam"
     category: insurance
     official_domains: [dai-ichi-life.com.vn]
     keywords: [daiichi, daiichilife]
     aliases: [dlvn]
-    verified: false
+    verified: true
+    source: https://dai-ichi-life.com.vn/storage/files/shares/Pdf-file/An%20Thinh%20Dau%20Tu_%20Ebrochure_2024.pdf
   - brand_id: pvi
     name: "Bảo hiểm PVI"
     category: insurance
@@ -814,28 +918,33 @@ brands:
     keywords: [pvi, pviinsurance]
     aliases: [pvi]
     verified: false
+    note: "pviholdings.com.vn có trong báo cáo thường niên (nguồn host bên thứ ba), chưa thêm; cần kiểm"
   - brand_id: grab
     name: "Grab"
     category: service
     official_domains: [grab.com]
     keywords: [grab, grabtaxi]
     aliases: [grab]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Grab_(company)
   - brand_id: xanhsm
     name: "Xanh SM"
     category: service
     official_domains: [xanhsm.com]
     keywords: [xanhsm]
     aliases: [xsm]
-    verified: false
+    verified: true
+    source: https://vi.wikipedia.org/wiki/Xanh_SM
+    note: "Wikipedia vi ghi thêm greensm.com ở infobox (một nguồn), chưa thêm"
   - brand_id: zalo
     name: "Zalo"
     category: service
     official_domains: [zalo.me, zaloapp.com]
     keywords: [zalo, zaloapp]
     aliases: [zl]
-    verified: false
-    note: "zaloapp.com chưa chắc"
+    verified: true
+    source: https://en.wikipedia.org/wiki/Zalo
+    note: "zaloapp.com lấy từ Microsoft Store"
   - brand_id: facebook
     name: "Facebook (Meta)"
     category: service
@@ -843,18 +952,21 @@ brands:
     keywords: [facebook, fbook]
     aliases: [fb]
     verified: false
-    note: "thương hiệu quốc tế, bị mạo danh nhiều"
+    source: https://en.wikipedia.org/wiki/Facebook
+    note: "facebook.com xác nhận (Wikipedia); fb.com, meta.com chỉ có nguồn bên thứ ba; thương hiệu quốc tế"
   - brand_id: vietnamairlines
     name: "Vietnam Airlines"
     category: service
     official_domains: [vietnamairlines.com]
     keywords: [vietnamairlines]
     aliases: [vna]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vietnam_Airlines
   - brand_id: vietjet
     name: "Vietjet Air"
     category: service
     official_domains: [vietjetair.com]
     keywords: [vietjet, vietjetair]
     aliases: [vj]
-    verified: false
+    verified: true
+    source: https://en.wikipedia.org/wiki/Vietjet_Air
