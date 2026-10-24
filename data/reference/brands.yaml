@@ -15,6 +15,9 @@
 #                     official_domains vì thiếu nguồn, hoặc domain được gợi ý mà chưa thêm. Khi chấm điểm vẫn coi là
 #                     chính chủ (không báo nhầm site thật), chỉ khác là chưa có nguồn. ASCII chữ thường, không
 #                     trùng official_domains hay domain của thương hiệu khác. Có nguồn xác nhận thì chuyển sang official_domains.
+#   optional          (tuỳ chọn, mặc định false) true cho thương hiệu quốc tế (paypal, steam, facebook): mặc định KHÔNG dùng
+#                     khi chấm điểm và không tính vào số liệu, báo cáo theo thương hiệu Việt; chỉ bật bằng tuỳ chọn
+#                     khi muốn có thêm ví dụ trực quan
 #   source            URL nguồn chính của lần xác minh (bắt buộc khi verified: true)
 #   note              chỗ chưa chắc, domain đã bỏ/chưa thêm và lý do. Thương hiệu đã ngừng (sendo, moca, mic, timo)
 #                     vẫn được giữ vì còn có thể bị mạo danh, ghi rõ ở note
@@ -193,7 +196,7 @@ brands:
     name: ZaloPay
     category: ewallet
     official_domains: [zalopay.vn]
-    keywords: [zalopay, zalo]
+    keywords: [zalopay]
     aliases: [zlp]
     verified: true
     source: https://docs.zalopay.vn/en/v2/docs/gateway/guide.html
@@ -627,6 +630,7 @@ brands:
     keywords: [paypal]
     aliases: [pp]
     verified: true
+    optional: true
     source: https://en.wikipedia.org/wiki/PayPal
   - brand_id: thegioididong
     name: "Thế Giới Di Động"
@@ -867,6 +871,7 @@ brands:
     keywords: [steam, steampowered, steamcommunity]
     aliases: [steam]
     verified: true
+    optional: true
     source: https://en.wikipedia.org/wiki/Steam_(service)
   - brand_id: roblox
     name: "Roblox"
@@ -977,8 +982,9 @@ brands:
     keywords: [facebook, fbook]
     aliases: [fb]
     verified: false
+    optional: true
     source: https://en.wikipedia.org/wiki/Facebook
-    note: "facebook.com xác nhận (Wikipedia); fb.com, meta.com chỉ có nguồn bên thứ ba; thương hiệu quốc tế"
+    note: "facebook.com xác nhận (Wikipedia); fb.com, meta.com chỉ có nguồn bên thứ ba"
   - brand_id: vietnamairlines
     name: "Vietnam Airlines"
     category: service
