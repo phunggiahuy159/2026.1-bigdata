@@ -100,3 +100,11 @@ def test_timestamps_are_integer_millis():
         assert domains["speed"]["properties"][key]["type"] == "integer"
     assert domains["batch"]["properties"]["scored_ts"]["type"] == "integer"
     assert load("alerts.schema.json")["properties"]["alert_ts"]["type"] == "integer"
+
+
+def test_ttl_field_is_bson_date_and_required():
+    alerts = load("alerts.schema.json")
+    assert alerts["properties"]["created_at"]["x-bsonType"] == "date"
+    assert "created_at" in alerts["required"]
+    ttl = [i for i in load("indexes.json")["alerts"] if "expireAfterSeconds" in i]
+    assert [list(i["keys"]) for i in ttl] == [["created_at"]]

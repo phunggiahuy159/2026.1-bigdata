@@ -27,6 +27,6 @@ Tên trường, kiểu và quy ước bám `contracts/kafka` và `contracts/iceb
 
 ## Ghi chú
 
-- `alerts` có TTL 30 ngày trên `created_at` (bản xem nhanh; bản đầy đủ nằm ở Kafka/Iceberg).
+- `alerts` có TTL 30 ngày trên `created_at` (bản xem nhanh; bản đầy đủ nằm ở Kafka/Iceberg). `created_at` **bắt buộc là BSON Date**: TTL index bỏ qua document có trường là chuỗi hay số nên sẽ không bao giờ xoá. Người ghi (P3) chuyển `alert_ts` (mili giây) sang Date, ví dụ `datetime.fromtimestamp(alert_ts / 1000, tz=UTC)`.
 - `alerts` bám `alerts.v1`; hiện chưa có `contracts/kafka/alerts.v1.schema.json`, P3 chốt xong thì đối chiếu lại tên trường.
 - Thay đổi tương thích ngược (thêm trường tuỳ chọn) chỉ cần báo; đổi không tương thích thì đổi tên collection có phiên bản (`domains_v2`) và báo người đọc, người ghi.
