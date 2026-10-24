@@ -11,8 +11,13 @@
 #   verified          true = official_domains đã đối chiếu nguồn công khai (trang chính chủ, Wikipedia,
 #                      cơ quan nhà nước hoặc danh bạ hội viên Hiệp hội Ngân hàng) và ghi ở `source`;
 #                      false = chưa xác nhận hết, bắt buộc có `note` nói chỗ cần kiểm
+#   other_domains     (tuỳ chọn) domain có khả năng là của thương hiệu nhưng CHƯA xác minh được: domain đã bỏ khỏi
+#                     official_domains vì thiếu nguồn, hoặc domain được gợi ý mà chưa thêm. Khi chấm điểm vẫn coi là
+#                     chính chủ (không báo nhầm site thật), chỉ khác là chưa có nguồn. ASCII chữ thường, không
+#                     trùng official_domains hay domain của thương hiệu khác. Có nguồn xác nhận thì chuyển sang official_domains.
 #   source            URL nguồn chính của lần xác minh (bắt buộc khi verified: true)
-#   note              chỗ chưa chắc, domain đã bỏ/chưa thêm và lý do
+#   note              chỗ chưa chắc, domain đã bỏ/chưa thêm và lý do. Thương hiệu đã ngừng (sendo, moca, mic, timo)
+#                     vẫn được giữ vì còn có thể bị mạo danh, ghi rõ ở note
 #   Xác minh bằng tìm kiếm web, chỉ mở trang chính chủ hoặc Wikipedia; không mở domain lấy từ luồng chứng chỉ.
 version: 1
 brands:
@@ -21,6 +26,7 @@ brands:
     name: Vietcombank
     category: bank
     official_domains: [vietcombank.com.vn]
+    other_domains: [vietcombank.com]
     keywords: [vietcombank, vcb, digibank]
     aliases: [vcb]
     verified: true
@@ -30,6 +36,7 @@ brands:
     name: VietinBank
     category: bank
     official_domains: [vietinbank.vn]
+    other_domains: [vietinbank.com.vn]
     keywords: [vietinbank, ipay]
     aliases: [ctg, vtb]
     verified: true
@@ -39,6 +46,7 @@ brands:
     name: BIDV
     category: bank
     official_domains: [bidv.com.vn]
+    other_domains: [bidv.vn]
     keywords: [bidv, smartbanking]
     aliases: [bidv]
     verified: true
@@ -48,6 +56,7 @@ brands:
     name: Agribank
     category: bank
     official_domains: [agribank.com.vn]
+    other_domains: [agribank.com]
     keywords: [agribank, ebanking]
     aliases: [vbard]
     verified: true
@@ -57,6 +66,7 @@ brands:
     name: Techcombank
     category: bank
     official_domains: [techcombank.com]
+    other_domains: [techcombank.com.vn]
     keywords: [techcombank, tcb]
     aliases: [tcb]
     verified: true
@@ -91,6 +101,7 @@ brands:
     name: TPBank
     category: bank
     official_domains: [tpb.vn]
+    other_domains: [tpbank.com.vn]
     keywords: [tpbank, tpb]
     aliases: [tpb]
     verified: true
@@ -217,6 +228,7 @@ brands:
     name: Shopee
     category: ecommerce
     official_domains: [shopee.vn]
+    other_domains: [shopee.com]
     keywords: [shopee, shopeevn]
     aliases: [shopee]
     verified: true
@@ -226,6 +238,7 @@ brands:
     name: Lazada
     category: ecommerce
     official_domains: [lazada.vn]
+    other_domains: [lazada.com]
     keywords: [lazada, lazadavn]
     aliases: [laz]
     verified: true
@@ -247,11 +260,12 @@ brands:
     aliases: [sendo]
     verified: false
     source: https://fintechnews.sg/134340/vietnam/sendo-shuts-down-online-grocery-platform-exits-e-commerce/
-    note: "sàn TMĐT đã ngừng từ 4/2025 (Sendo Farm cũng dừng); domain có thể bị chiếm lại; nhóm quyết định giữ hay bỏ"
+    note: "sàn TMĐT đã ngừng từ 4/2025 (Sendo Farm cũng dừng); domain có thể bị chiếm lại; giữ vì vẫn có thể bị mạo danh"
   - brand_id: tiktokshop
     name: TikTok Shop
     category: ecommerce
     official_domains: [tiktok.com]
+    other_domains: [tiktokglobalshop.com]
     keywords: [tiktok, tiktokshop]
     aliases: [ttshop]
     verified: false
@@ -295,6 +309,7 @@ brands:
     name: FPT Telecom
     category: telecom
     official_domains: [fpt.vn]
+    other_domains: [fpt.com.vn]
     keywords: [fpt, fpttelecom]
     aliases: [fpt]
     verified: true
@@ -324,6 +339,7 @@ brands:
     name: Bảo hiểm xã hội Việt Nam
     category: gov
     official_domains: [baohiemxahoi.gov.vn]
+    other_domains: [vssid.vn]
     keywords: [bhxh, baohiemxahoi, vssid, baohiem]
     aliases: [bhxh, vss]
     verified: true
@@ -399,6 +415,7 @@ brands:
     name: SPX Express
     category: logistics
     official_domains: [spx.vn]
+    other_domains: [spxexpress.com]
     keywords: [spx, spxexpress, shopeeexpress]
     aliases: [spx]
     verified: true
@@ -418,6 +435,7 @@ brands:
     name: "LPBank (LienVietPostBank)"
     category: bank
     official_domains: [lpbank.com.vn]
+    other_domains: [lienvietpostbank.com.vn]
     keywords: [lpbank, lienvietpostbank]
     aliases: [lpb]
     verified: true
@@ -450,6 +468,7 @@ brands:
     name: "Bac A Bank"
     category: bank
     official_domains: [baca-bank.vn]
+    other_domains: [bacabank.com.vn]
     keywords: [bacabank, baca]
     aliases: [bab]
     verified: true
@@ -509,7 +528,7 @@ brands:
     keywords: [timo, timobank]
     aliases: [timo]
     verified: false
-    note: "chỉ có App Store; có thể đã đổi chủ/tên thương hiệu (Timo Credit); cần kiểm"
+    note: "chỉ có App Store; có thể đã đổi chủ/tên thương hiệu (Timo Credit); cần kiểm; giữ vì vẫn có thể bị mạo danh"
   - brand_id: hsbc_vn
     name: "HSBC Việt Nam"
     category: bank
@@ -566,7 +585,7 @@ brands:
     aliases: [moca]
     verified: false
     source: https://diendandoanhnghiep.vn/vi-sao-vi-dien-tu-moca-ngung-hoat-dong-264261.html
-    note: "ví Moca ngừng dịch vụ từ 1/7/2024; không có nguồn cho moca.vn; nhóm quyết định giữ hay bỏ"
+    note: "ví Moca ngừng dịch vụ từ 1/7/2024; không có nguồn cho moca.vn; giữ vì vẫn có thể bị mạo danh"
   - brand_id: payoo
     name: "Payoo"
     category: ewallet
@@ -587,6 +606,7 @@ brands:
     name: "NAPAS"
     category: ewallet
     official_domains: [napas.com.vn]
+    other_domains: [vietqr.net]
     keywords: [napas, vietqr]
     aliases: [napas]
     verified: true
@@ -660,6 +680,7 @@ brands:
     name: "Chợ Tốt"
     category: ecommerce
     official_domains: [chotot.com]
+    other_domains: [chotot.vn]
     keywords: [chotot]
     aliases: [ct]
     verified: true
@@ -747,7 +768,7 @@ brands:
     aliases: [bttt]
     verified: false
     source: https://en.wikipedia.org/wiki/Ministry_of_Information_and_Communications_(Vietnam)
-    note: "bộ đã hợp nhất vào Bộ KH&CN từ 2/2025; chưa có nguồn cho domain cổng mới; nhóm quyết định giữ hay bỏ"
+    note: "bộ đã hợp nhất vào Bộ KH&CN từ 2/2025; chưa có nguồn cho domain cổng mới; giữ vì vẫn có thể bị mạo danh"
   - brand_id: dangkykinhdoanh
     name: "Cổng đăng ký doanh nghiệp quốc gia"
     category: gov
@@ -834,6 +855,7 @@ brands:
     name: "GOSU"
     category: game
     official_domains: [gosu.vn]
+    other_domains: [gosucorp.vn]
     keywords: [gosu, gosugame]
     aliases: [gosu]
     verified: false
@@ -874,6 +896,7 @@ brands:
     name: "Bảo Việt"
     category: insurance
     official_domains: [baoviet.com.vn]
+    other_domains: [baovietonline.com.vn]
     keywords: [baoviet]
     aliases: [bv]
     verified: true
@@ -915,6 +938,7 @@ brands:
     name: "Bảo hiểm PVI"
     category: insurance
     official_domains: [pvi.com.vn]
+    other_domains: [pviholdings.com.vn]
     keywords: [pvi, pviinsurance]
     aliases: [pvi]
     verified: false
@@ -931,6 +955,7 @@ brands:
     name: "Xanh SM"
     category: service
     official_domains: [xanhsm.com]
+    other_domains: [greensm.com]
     keywords: [xanhsm]
     aliases: [xsm]
     verified: true
