@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "domains",
+  "description": "Một document cho mỗi domain gốc (eTLD+1). Trường `speed` chỉ do P3 ghi, `batch` chỉ do P5 ghi.",
+  "type": "object",
+  "required": ["_id"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": {"type": "string", "description": "domain gốc (eTLD+1), chữ thường, punycode"},
+    "brand_id": {"type": ["string", "null"], "description": "thương hiệu bị nhắm tới (brands.yaml); do P3 ghi cùng speed"},
+    "speed": {
+      "type": "object",
+      "description": "P3 ghi bằng $set trên từng trường con của speed.*",
+      "required": ["score", "reasons", "updated_ts"],
+      "additionalProperties": false,
+      "properties": {
+        "score": {"type": "integer", "minimum": 0, "maximum": 100},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "first_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
+        "last_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
+        "cert_count": {"type": "integer", "minimum": 0},
+        "rule_version": {"type": "string"},
+        "updated_ts": {"type": "integer", "description": "UTC, mili giây"}
+      }
+    },
+    "batch": {
+      "type": "object",
+      "description": "P5 ghi (job chấm điểm hằng ngày) bằng $set trên batch",
+      "required": ["score", "reasons", "scored_date", "model_version", "updated_ts"],
+      "additionalProperties": false,
+      "properties": {
+        "score": {"type": "integer", "minimum": 0, "maximum": 100},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "scored_date": {"type": "string", "format": "date", "description": "ngày của gold.domain_scores"},
+        "model_version": {"type": "string", "description": "phiên bản PipelineModel trong models/ trên MinIO"},
+        "campaign_id": {"type": ["string", "null"], "description": "khoá sang collection campaigns"},
+        "anomaly_cluster": {"type": ["integer", "null"], "description": "cụm KMeans cho domain chưa có nhãn"},
+        "enrichment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ips": {"type": "array", "items": {"type": "string"}},
+            "asn": {"type": ["integer", "null"]},
+            "asn_org": {"type": ["string", "null"]},
+            "ns": {"type": "array", "items": {"type": "string"}},
+            "domain_age_days": {"type": ["integer", "null"]}
+          }
+        },
+        "updated_ts": {"type": "integer", "description": "UTC, mili giây"}
+      }
+    }
+  }
+}

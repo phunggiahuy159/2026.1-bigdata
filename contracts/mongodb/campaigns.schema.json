@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "campaigns",
+  "description": "Chiến dịch (cụm domain liên quan) do P5 ghi từ gold.campaigns của P4. Ghi lại bằng replace theo _id.",
+  "type": "object",
+  "required": ["_id", "domains", "size", "run_date"],
+  "additionalProperties": false,
+  "properties": {
+    "_id": {"type": "string", "description": "campaign_id lấy từ gold.campaigns"},
+    "domains": {"type": "array", "items": {"type": "string"}, "description": "domain gốc thành viên"},
+    "size": {"type": "integer", "minimum": 1},
+    "brand_ids": {"type": "array", "items": {"type": "string"}},
+    "shared": {
+      "type": "object",
+      "description": "đặc điểm chung tạo nên cụm",
+      "additionalProperties": false,
+      "properties": {
+        "asn": {"type": ["integer", "null"]},
+        "ips": {"type": "array", "items": {"type": "string"}},
+        "ca": {"type": ["string", "null"]}
+      }
+    },
+    "first_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
+    "last_seen_ts": {"type": "integer", "description": "UTC, mili giây"},
+    "run_date": {"type": "string", "format": "date", "description": "ngày chạy job đồ thị"}
+  }
+}
