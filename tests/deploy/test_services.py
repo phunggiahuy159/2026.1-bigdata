@@ -133,3 +133,8 @@ def test_third_party_minio_images_are_pinned_by_digest():
     assert len(images) == 2
     for image in images:
         assert re.search(r"@sha256:[0-9a-f]{64}$", image), image
+
+
+def test_catalog_migration_is_not_a_post_install_hook():
+    values = yaml.safe_load((DEPLOY / "iceberg-catalog/values.yaml").read_text())
+    assert values["helmWait"] is True
