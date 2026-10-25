@@ -3,4 +3,4 @@ name = "serving"
 version = "0.1.0"
 description = "Ứng dụng Streamlit của ScamRadar VN"
 requires-python = ">=3.11,<3.12"
-dependencies = ["streamlit>=1.40,<2"]
+dependencies = ["streamlit>=1.50,<2"]

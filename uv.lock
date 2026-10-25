@@ -539,7 +539,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "streamlit", specifier = ">=1.40,<2" }]
+requires-dist = [{ name = "streamlit", specifier = ">=1.50,<2" }]
 
 [[package]]
 name = "six"
