@@ -2,6 +2,12 @@ version = 1
 revision = 5
 requires-python = "==3.11.*"
 
+[manifest]
+members = [
+    "scamradar",
+    "scamradar-core",
+]
+
 [[package]]
 name = "colorama"
 version = "0.4.6"
@@ -125,3 +131,14 @@ dev = [
     { name = "pyyaml", specifier = ">=6,<7" },
     { name = "ruff", specifier = ">=0.8,<1" },
 ]
+
+[[package]]
+name = "scamradar-core"
+version = "0.1.0"
+source = { virtual = "libs/scamradar_core" }
+dependencies = [
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pyyaml", specifier = ">=6,<7" }]
