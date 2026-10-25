@@ -126,3 +126,10 @@ def test_kafka_image_matches_cluster_version():
     version = kafka["spec"]["kafka"]["version"]
     images = next(s for s in SERVICES if s["name"] == "kafka")["images"]
     assert any(image.endswith(f"-kafka-{version}") for image in images)
+
+
+def test_third_party_minio_images_are_pinned_by_digest():
+    images = next(s for s in SERVICES if s["name"] == "minio")["images"]
+    assert len(images) == 2
+    for image in images:
+        assert re.search(r"@sha256:[0-9a-f]{64}$", image), image

@@ -41,8 +41,8 @@ services:
     namespace: minio
     chart: {repo: https://charts.min.io/, name: minio, version: 5.4.0}
     images:
-      - docker.io/pgsty/minio:RELEASE.2026-08-04T00-00-00Z
-      - docker.io/pgsty/mc:RELEASE.2026-10-18T00-00-00Z
+      - docker.io/pgsty/minio:RELEASE.2026-08-04T00-00-00Z@sha256:b6bfe7239bfc83fb90d31612d9704d86039dd714f7904b3f1ad68f211e602372
+      - docker.io/pgsty/mc:RELEASE.2026-10-18T00-00-00Z@sha256:6ecdaec70bc5e8cf9d0e9a70c190f3beb1c83f11617ff4333f1fcd71ab1daf18
     values: deploy/minio/values.yaml
     requests: {cpu: 250, memory: 1024}
     limits: {cpu: 1000, memory: 2048}

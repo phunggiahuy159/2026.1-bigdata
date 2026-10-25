@@ -1,16 +1,17 @@
 # helm upgrade --install minio minio/minio --version 5.4.0 -n minio -f deploy/minio/values.yaml
 # Chart 5.4.0 mặc định kéo quay.io/minio/minio và quay.io/minio/mc, hai image này đã bị gỡ
-# khỏi quay.io (không còn manifest). Dùng bản fork pgsty/minio (S3 API giống hệt, ghim tag).
+# khỏi quay.io (không còn manifest). Dùng bản fork pgsty/minio (S3 API giống hệt), ghim tag
+# và digest vì do bên thứ ba duy trì.
 # Root user/password lấy từ Secret minio-credentials do `make secrets` tạo từ .env.
 mode: standalone
 replicas: 1
 
 image:
   repository: docker.io/pgsty/minio
-  tag: RELEASE.2026-08-04T00-00-00Z
+  tag: RELEASE.2026-08-04T00-00-00Z@sha256:b6bfe7239bfc83fb90d31612d9704d86039dd714f7904b3f1ad68f211e602372
 mcImage:
   repository: docker.io/pgsty/mc
-  tag: RELEASE.2026-10-18T00-00-00Z
+  tag: RELEASE.2026-10-18T00-00-00Z@sha256:6ecdaec70bc5e8cf9d0e9a70c190f3beb1c83f11617ff4333f1fcd71ab1daf18
 
 existingSecret: minio-credentials
 
