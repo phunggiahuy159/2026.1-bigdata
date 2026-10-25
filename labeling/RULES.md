@@ -62,13 +62,31 @@ Không đủ thông tin để phân biệt `suspicious` với `clean`. Bỏ qua,
 
 | Cột | Ý nghĩa |
 | --- | --- |
-| `domain` | domain gốc (eTLD+1), chữ thường, dạng thật (file CSV nhỏ, không dùng để mở) |
+| `domain` | domain gốc (eTLD+1), ASCII punycode, chữ thường, dạng thật để join với bảng khác (không bao giờ mở) |
 | `label` | `phishing` / `suspicious` / `clean` |
 | `brand_id` | thương hiệu bị nhắm tới, rỗng nếu `clean` không liên quan |
 | `annotator` | mã người gán (`a1`, `a2`) |
-| `source` | `manual` / `safebrowsing` / `tranco` / `official` |
+| `source` | `manual` / `safe_browsing` / `tranco` / `official` |
 | `double_labeled` | `1` nếu thuộc phần gán chéo 10% |
 | `note` | lý do ngắn gọn |
+
+## Quy ước nhãn khi ghi `silver.labels`
+
+Nhãn tay trong CSV giữ ba giá trị để phân tích; bảng `silver.labels` (hợp đồng Iceberg) chỉ có hai lớp
+`phishing | benign` vì mô hình huấn luyện là phân loại nhị phân. Phép ánh xạ do job nhãn thực hiện
+(`labeling/labels.py`):
+
+| CSV `label` | `silver.labels.label` |
+| --- | --- |
+| `phishing` | `phishing` |
+| `clean` | `benign` |
+| `suspicious` | không ghi vào bảng |
+| `skip` | không ghi vào bảng |
+
+`label_source` của `silver.labels` lấy từ cột `source` của CSV (`manual`, `safe_browsing`, `tranco`, `official`).
+Khi cả nhãn tay và Safe Browsing cùng có cho một domain, hai dòng được ghi với `label_source` khác nhau
+(hạt của bảng là `(registered_domain, label_source)`); job huấn luyện chọn thứ tự ưu tiên: `manual` hơn
+`official` hơn `safe_browsing` hơn `tranco`.
 
 ## An toàn và quản trị
 
