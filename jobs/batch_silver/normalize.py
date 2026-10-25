@@ -1,8 +1,9 @@
 """Chuẩn hoá tên miền: punycode và tách domain gốc (eTLD+1) theo Public Suffix List.
 
-TODO: thay toàn bộ file này bằng `scamradar_core` của P3 khi thư viện được merge. Giữ nguyên chữ ký
-`ToAsciiFn` / `SplitFn` để transform không phải đổi. Quy tắc giữ cùng contract: domain gốc là
-eTLD+1,
+TODO: thay toàn bộ file này bằng `scamradar_core` của P3 (PR #14) khi thư viện được merge.
+Giữ nguyên chữ ký `ToAsciiFn` / `SplitFn` để transform không phải đổi. Quy tắc giữ cùng thư viện
+của P3 để khoá domain hai lớp (batch và speed) khớp nhau: tính cả phần PRIVATE của PSL (`x.github.io` là domain gốc
+riêng), luật Unicode của PSL đổi sang punycode, domain gốc là eTLD+1,
 ASCII punycode, viết thường (xem contracts/iceberg/README.md).
 """
 
@@ -24,19 +25,26 @@ DEFAULT_PSL_PATH = (
 _PRIVATE_MARK = "===BEGIN PRIVATE DOMAINS==="
 
 
-def load_psl_rules(path: str | os.PathLike[str], include_private: bool = False) -> frozenset[str]:
-    """Đọc file PSL (data/reference/download.sh tải về). Mặc định chỉ lấy phần ICANN.
+def _rule_to_ascii(rule: str) -> str:
+    """Luật PSL Unicode (ví dụ `公司.cn`) sang punycode, vì tên miền đã được đổi sang ASCII."""
+    labels = []
+    for label in rule.split("."):
+        if label != "*" and not label.isascii():
+            label = label.encode("idna").decode("ascii")
+        labels.append(label)
+    return ".".join(labels)
 
-    TODO(P3): phần PRIVATE (github.io, blogspot.com, ...) có tính là suffix hay không do
-    scamradar_core quyết định.
-    """
+
+def load_psl_rules(path: str | os.PathLike[str], include_private: bool = True) -> frozenset[str]:
+    """Đọc file PSL. Mặc định gồm cả phần PRIVATE, giống scamradar_core: mỗi tenant của dịch vụ
+    lưu trữ (github.io, web.app, ...) là một domain gốc riêng."""
     rules: set[str] = set()
     for line in Path(path).read_text(encoding="utf-8").splitlines():
         if _PRIVATE_MARK in line and not include_private:
             break
         line = line.strip()
         if line and not line.startswith("//"):
-            rules.add(line.split()[0].lower())
+            rules.add(_rule_to_ascii(line.split()[0].lower()))
     return frozenset(rules)
 
 
@@ -79,8 +87,9 @@ class Normalizer:
 
 
 def default_normalizer(psl_path: str | os.PathLike[str] | None = None) -> Normalizer:
-    """Normalizer dùng PSL từ `psl_path`, biến môi trường PSL_PATH hoặc data/reference/."""
-    path = Path(psl_path or os.environ.get("PSL_PATH") or DEFAULT_PSL_PATH)
+    """Normalizer dùng PSL từ `psl_path`, PSL_PATH / SCAMRADAR_PSL hoặc data/reference/."""
+    env = os.environ.get("PSL_PATH") or os.environ.get("SCAMRADAR_PSL")
+    path = Path(psl_path or env or DEFAULT_PSL_PATH)
     if not path.exists():
         raise FileNotFoundError(
             f"không thấy Public Suffix List ở {path}; "

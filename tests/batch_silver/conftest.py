@@ -5,7 +5,9 @@ import pytest
 FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "bronze_ct_certs.jsonl"
 
 # Luật PSL tối thiểu cho fixture: không phụ thuộc file tải về hay mạng.
-MINI_PSL = frozenset({"com", "net", "org", "vn", "com.vn", "net.vn", "xyz", "*.ck", "!www.ck"})
+MINI_PSL = frozenset(
+    {"com", "net", "org", "vn", "com.vn", "net.vn", "xyz", "*.ck", "!www.ck", "github.io"}
+)
 
 
 @pytest.fixture(scope="session")
