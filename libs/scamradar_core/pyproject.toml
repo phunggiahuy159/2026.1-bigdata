@@ -1,0 +1,6 @@
+[project]
+name = "scamradar-core"
+version = "0.1.0"
+description = "Chuẩn hoá domain và chấm điểm nghi mạo danh thương hiệu Việt, dùng chung cho stream và batch"
+requires-python = ">=3.11,<3.12"
+dependencies = ["pyyaml>=6,<7"]
