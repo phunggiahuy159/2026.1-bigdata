@@ -1,18 +1,19 @@
+import os
 from pathlib import Path
 
 import pytest
 
 FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "bronze_ct_certs.jsonl"
 
-# Luật PSL tối thiểu cho fixture: không phụ thuộc file tải về hay mạng.
-MINI_PSL = frozenset(
-    {"com", "net", "org", "vn", "com.vn", "net.vn", "xyz", "*.ck", "!www.ck", "github.io"}
-)
-
 
 @pytest.fixture(scope="session")
 def spark():
     from pyspark.sql import SparkSession
+
+    # worker Python của Spark cần import được `jobs` và `scamradar_core` (pytest chỉ thêm cho driver)
+    root = Path(__file__).resolve().parents[2]
+    paths = [str(root), str(root / "libs"), os.environ.get("PYTHONPATH", "")]
+    os.environ["PYTHONPATH"] = os.pathsep.join(p for p in paths if p)
 
     session = (
         SparkSession.builder.master("local[2]")
@@ -31,9 +32,9 @@ def spark():
 
 @pytest.fixture(scope="session")
 def norm():
-    from jobs.batch_silver.normalize import Normalizer, make_split, to_ascii
+    from jobs.batch_silver.normalize import default_normalizer
 
-    return Normalizer(to_ascii=to_ascii, split=make_split(MINI_PSL))
+    return default_normalizer()
 
 
 @pytest.fixture(scope="session")

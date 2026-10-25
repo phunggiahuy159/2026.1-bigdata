@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Job batch bronze.ct_certs -> silver.cert_domains"
 requires-python = ">=3.11,<3.12"
 # Phiên bản PySpark phải khớp image Spark chung của P1 (docker/spark/); đổi theo image khi nó được ghim.
-dependencies = ["pyspark>=3.5,<3.6"]
+dependencies = ["pyspark>=3.5,<3.6", "scamradar-core"]
+
+[tool.uv.sources]
+scamradar-core = { workspace = true }

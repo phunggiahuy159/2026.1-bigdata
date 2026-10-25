@@ -4,11 +4,13 @@ Trên cụm (Iceberg):
     spark-submit jobs/batch_silver/job.py --start 2026-10-20 --end 2026-10-21
 
 Chạy local trên file mẫu JSON Lines theo schema bronze.ct_certs, ghi Parquet:
-    python -m jobs.batch_silver.job --start 2026-10-20 --end 2026-10-22 \
+    PYTHONPATH=.:libs python -m jobs.batch_silver.job --start 2026-10-20 --end 2026-10-22 \
         --source-json tests/fixtures/bronze_ct_certs.jsonl --sink-path /tmp/silver_cert_domains
 
-Cấu hình: BRONZE_TABLE, SILVER_TABLE, PSL_PATH. Bắt buộc spark.sql.session.timeZone=UTC
-(contracts/iceberg/README.md).
+Cấu hình: BRONZE_TABLE, SILVER_TABLE (PSL: SCAMRADAR_PSL của scamradar_core). Bắt buộc
+spark.sql.session.timeZone=UTC (contracts/iceberg/README.md). Executor phải import được `jobs` và
+`scamradar_core` (PYTHONPATH hoặc --py-files; chạy local đặt
+PYTHONPATH=.:libs, worker thừa hưởng từ driver).
 Chạy lại một ngày bất kỳ an toàn: đọc bronze theo khoảng ngày, hợp nhất với dòng đã có trong silver
 theo khoá (cert_key, fqdn), rồi MERGE theo đúng khoá đó (compute_updates). Dòng cũ được đọc
 theo khoá, không theo cửa sổ ngày, nên cert đến muộn vẫn hợp nhất đủ và kết quả không phụ thuộc
