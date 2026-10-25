@@ -1,6 +1,12 @@
 import pytest
 
-from serving.app.defang import defang_domain, defang_url, display_domain
+from serving.app.defang import (
+    defang_domain,
+    defang_text,
+    defang_url,
+    defang_value,
+    display_domain,
+)
 
 
 @pytest.mark.parametrize(
@@ -37,3 +43,37 @@ def test_display_domain_matches_convention():
 def test_defanged_output_never_contains_clickable_scheme():
     out = display_domain("login.example.vn")
     assert "http://" not in out and "https://" not in out and ".vn" not in out
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("ns1.evil.example", "ns1[.]evil[.]example"),
+        ("192.0.2.10", "192[.]0[.]2[.]10"),
+        ("2001:db8::1", "2001:db8::1"),
+        ("visit https://bad.example/x now", "visit hxxps://bad[.]example/x now"),
+        ("Example.com Hosting LLC", "Example[.]com Hosting LLC"),
+        ("typosquat", "typosquat"),
+        ("DEMO-HOSTING", "DEMO-HOSTING"),
+        ("score 1.5 ok", "score 1.5 ok"),
+        ("hxxps://abc[.]com", "hxxps://abc[.]com"),
+        ("abc[.]com", "abc[.]com"),
+    ],
+)
+def test_defang_text(raw, expected):
+    assert defang_text(raw) == expected
+
+
+def test_defang_text_is_idempotent():
+    once = defang_text("a.b.example 192.0.2.1 http://c.example")
+    assert defang_text(once) == once
+
+
+def test_defang_value_walks_nested_structures():
+    value = {"ns": ["ns1.bad.example"], "n": 5, "x": {"u": "http://bad.example"}, "none": None}
+    assert defang_value(value) == {
+        "ns": ["ns1[.]bad[.]example"],
+        "n": 5,
+        "x": {"u": "hxxp://bad[.]example"},
+        "none": None,
+    }

@@ -84,3 +84,35 @@ def test_speed_only_document_has_no_batch_score():
     detail = domain_detail(doc)
     assert detail["source"] == "speed" and detail["batch_score"] is None
     assert detail["first_seen"] == ""
+
+
+def test_enrichment_values_are_defanged():
+    doc = {
+        "_id": "x.example",
+        "batch": {
+            "score": 80,
+            "reasons": ["see https://evil.example/login"],
+            "enrichment": {
+                "a_records": ["192.0.2.7"],
+                "aaaa_records": ["2001:db8::7"],
+                "ns_records": ["ns1.evil.example", "ns2.evil.example"],
+                "asn_org": ["Evil-Host.example LLC"],
+            },
+        },
+    }
+    detail = domain_detail(doc)
+    assert detail["enrichment"]["ips"] == ["192[.]0[.]2[.]7", "2001:db8::7"]
+    assert detail["enrichment"]["nameservers"] == ["ns1[.]evil[.]example", "ns2[.]evil[.]example"]
+    assert detail["enrichment"]["asn_org"] == ["Evil-Host[.]example LLC"]
+    assert detail["reasons"] == ["see hxxps://evil[.]example/login"]
+
+
+def test_sample_enrichment_never_leaks_raw_ips_or_nameservers():
+    raw = set()
+    for doc in REPO.domains():
+        enrichment = (doc.get("batch") or {}).get("enrichment") or {}
+        raw |= set(enrichment.get("a_records", []) + enrichment.get("ns_records", []))
+    assert raw
+    shown = list(flatten([domain_detail(d) for d in REPO.domains()]))
+    for value in raw:
+        assert all(value not in text for text in shown), value

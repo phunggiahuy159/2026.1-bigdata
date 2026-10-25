@@ -24,3 +24,32 @@ def defang_url(url: str) -> str:
 def display_domain(domain: str) -> str:
     """Dạng hiển thị chuẩn của một domain trong ứng dụng: `hxxps://abc[.]com`."""
     return defang_url(f"https://{domain}")
+
+
+_TOKEN = re.compile(
+    r"(?P<url>[A-Za-z][A-Za-z0-9+.-]*://\S+)"
+    r"|(?P<ip>(?<![\w.])\d{1,3}(?:\.\d{1,3}){3}(?![\w.]))"
+    r"|(?P<domain>(?<![\w.@-])(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z][A-Za-z0-9-]*)"
+)
+
+
+def defang_text(text: str) -> str:
+    """Vô hiệu hoá mọi URL, địa chỉ IPv4 và chuỗi dạng domain trong một đoạn văn bản."""
+
+    def replace(match: re.Match) -> str:
+        if match.group("url"):
+            return defang_url(match.group("url"))
+        return defang_domain(match.group(0))
+
+    return _TOKEN.sub(replace, text)
+
+
+def defang_value(value):
+    """Áp `defang_text` cho mọi chuỗi trong dict/list lồng nhau (kể cả IPv6 và tên miền)."""
+    if isinstance(value, str):
+        return defang_text(value)
+    if isinstance(value, dict):
+        return {key: defang_value(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [defang_value(item) for item in value]
+    return value
