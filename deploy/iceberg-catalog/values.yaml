@@ -3,6 +3,7 @@
 # Lakekeeper (Iceberg REST catalog, image quay.io/lakekeeper/catalog:v0.13.3) với PostgreSQL
 # đi kèm chart (groundhog2k/postgres, image chính thức docker.io/postgres).
 # Mật khẩu và khoá mã hoá lấy từ Secret do `make secrets` tạo từ .env.
+# Không chạy `helm test`: Pod test của chart dùng curlimages/curl:latest, không resources.
 # Chưa bật xác thực (auth.* để trống): chỉ truy cập trong cụm, NetworkPolicy ở tuần 5.
 lakekeeper:
   edition: core

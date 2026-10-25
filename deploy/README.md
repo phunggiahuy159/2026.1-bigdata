@@ -13,7 +13,7 @@ CPU và RAM là requests (limits ở `services.yaml`); `values` = đã viết v�
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Strimzi operator | 1 | `strimzi-kafka-operator` 1.3.0 | `strimzi/operator:1.3.0` | 0.2 | 384 MiB | 0 | values |
 | Kafka KRaft, 1 node controller+broker, topic operator | 1 | CR `Kafka` + `KafkaNodePool` | `strimzi/kafka:1.3.0-kafka-4.2.2` | 1.1 | 3.25 GiB | 60 GiB | values |
-| MinIO standalone | 1 | `minio` 5.4.0 | `pgsty/minio:RELEASE.2026-08-04T00-00-00Z`, `pgsty/mc:RELEASE.2026-10-18T00-00-00Z` | 0.25 | 1 GiB | 150 GiB | values |
+| MinIO standalone | 1 | `minio` 5.4.0 | `pgsty/minio:RELEASE.2026-08-04T00-00-00Z@sha256:b6bfe723…`, `pgsty/mc:RELEASE.2026-10-18T00-00-00Z@sha256:6ecdaec7…` | 0.25 | 1 GiB | 150 GiB | values |
 | Iceberg REST catalog (Lakekeeper) + PostgreSQL | 1 | `lakekeeper` 0.12.0 (kèm `groundhog2k/postgres`) | `lakekeeper/catalog:v0.13.3`, `postgres:18.6` | 0.2 | 512 MiB | 5 GiB | values |
 | MongoDB | 2 | `groundhog2k/mongodb` 0.8.4 | `mongo:8.3.13` | 0.25 | 1 GiB | 20 GiB | ước lượng |
 | Redis (8.10 ≥ 6.2) | 2 | `groundhog2k/redis` 2.4.8 | `redis:8.10.2` | 0.1 | 256 MiB | 2 GiB | ước lượng |
@@ -56,10 +56,15 @@ make deploy-core       # = deploy-storage, secrets, deploy-kafka, deploy-minio, 
 
 Từng bước (đều có target riêng):
 
-1. `deploy-storage`: tạo `~/bigd/data/{kafka,minio,catalog-postgres}` (0777) trên máy chủ rồi
+1. `deploy-storage`: tạo `~/bigd/data` (0700) và `{kafka,minio,catalog-postgres}` bên trong (0777, vì
+   container chạy bằng UID khác; thư mục cha 0700 chặn người dùng khác trên máy) rồi
    `kubectl apply` namespace `kafka`, `minio`, `iceberg`, StorageClass `bigd-data` và 3 PV hostPath
    trỏ `/bigd-data/...` (node kind mount `~/bigd/data` thành `/bigd-data`).
-2. `secrets`: tạo `minio-credentials`, `catalog-postgres`, `catalog-encryption` từ `.env`.
+2. `secrets` (`deploy/scripts/create-secrets.sh`): tạo `minio-credentials`, `catalog-postgres`,
+   `catalog-encryption` từ `.env`. Từ chối chạy nếu biến rỗng hoặc còn giá trị `changeme-*`; không
+   ghi đè Secret đã có (báo "bỏ qua"), vì đổi mật khẩu Postgres hay khoá mã hoá sau khi DB đã khởi
+   tạo làm hỏng catalog; muốn đổi thì xoá Secret bằng tay có chủ đích. Giá trị đi qua file tạm
+   quyền 0600, không nằm trong argv của `kubectl`, và `.env` không được `source`.
 3. `deploy-kafka`: `helm upgrade --install strimzi` (1.3.0) rồi `kubectl apply` CR Kafka và đợi Ready.
 4. `deploy-minio`: `helm upgrade --install minio` (5.4.0); job sau cài tạo bucket
    `warehouse`, `checkpoints`, `models`.
@@ -67,6 +72,9 @@ Từng bước (đều có target riêng):
 
 Địa chỉ trong cụm: Kafka `bigd-kafka-kafka-bootstrap.kafka.svc:9092` (plain, chưa xác thực),
 MinIO `minio.minio.svc:9000`, catalog `iceberg-catalog-lakekeeper.iceberg.svc:8181`.
+
+Không chạy `helm test` cho Lakekeeper: Pod test của chart dùng `curlimages/curl:latest`, không có
+resources và không tắt được bằng values; bootstrap sẽ làm tay hoặc bằng job riêng.
 
 Sau khi cài còn hai việc thủ công, chưa nằm trong `make`: bootstrap Lakekeeper và tạo warehouse
 trỏ bucket `warehouse` bằng API (cần khoá S3 của MinIO), sau đó cấu hình catalog `rest` trong image Spark.
