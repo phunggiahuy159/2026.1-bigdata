@@ -10,7 +10,7 @@ FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "bronze_ct_certs.js
 def spark():
     from pyspark.sql import SparkSession
 
-    # worker Python của Spark cần import được `jobs` và `scamradar_core` (pytest chỉ thêm cho driver)
+    # worker Spark cần import được `jobs` và `scamradar_core`; pytest chỉ thêm đường dẫn cho driver
     root = Path(__file__).resolve().parents[2]
     paths = [str(root), str(root / "libs"), os.environ.get("PYTHONPATH", "")]
     os.environ["PYTHONPATH"] = os.pathsep.join(p for p in paths if p)
