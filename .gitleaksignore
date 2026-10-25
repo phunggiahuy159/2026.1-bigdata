@@ -1,0 +1,3 @@
+# Giá trị giả trong test của script tạo Secret bị rule generic-api-key báo nhầm (commit 5a4abbd);
+# file test đã đổi sang giá trị sinh từ tên biến, dòng này chỉ cần cho lịch sử commit.
+5a4abbd7a7ab469c7dcbd3a5bb42c008374bc754:tests/deploy/test_create_secrets.py:generic-api-key:18
