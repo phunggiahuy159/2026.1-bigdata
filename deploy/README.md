@@ -76,8 +76,12 @@ MinIO `minio.minio.svc:9000`, catalog `iceberg-catalog-lakekeeper.iceberg.svc:81
 Không chạy `helm test` cho Lakekeeper: Pod test của chart dùng `curlimages/curl:latest`, không có
 resources và không tắt được bằng values; bootstrap sẽ làm tay hoặc bằng job riêng.
 
-Sau khi cài còn hai việc thủ công, chưa nằm trong `make`: bootstrap Lakekeeper và tạo warehouse
-trỏ bucket `warehouse` bằng API (cần khoá S3 của MinIO), sau đó cấu hình catalog `rest` trong image Spark.
+6. `bootstrap-catalog` (`deploy/scripts/bootstrap-catalog.sh`): bootstrap Lakekeeper và tạo warehouse `bigd`
+   trỏ bucket `warehouse` trên MinIO; chạy lại được. Khoá S3 lấy từ `.env`, đi qua file tạm 0600.
+7. `deploy-topics`: áp `ingestion/kafka/topics.yaml` và chờ 3 KafkaTopic Ready.
+
+Catalog REST trong cụm: `http://iceberg-catalog-lakekeeper.iceberg.svc:8181/catalog`, warehouse `bigd`.
+Việc còn lại: cấu hình catalog `rest` trong image Spark và kiểm đọc/ghi bảng Iceberg thật từ Spark.
 
 ## Điểm cần Minh quyết định
 

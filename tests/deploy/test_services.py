@@ -152,3 +152,13 @@ def test_deploy_topics_target_applies_all_contract_topics():
 
 def test_gitignore_covers_egg_info():
     assert "*.egg-info/" in (ROOT / ".gitignore").read_text().splitlines()
+
+
+def test_bootstrap_script_keeps_s3_keys_out_of_argv():
+    script = (DEPLOY / "scripts/bootstrap-catalog.sh").read_text()
+    assert "--data @" in script
+    for line in script.splitlines():
+        if line.lstrip().startswith("curl"):
+            assert "SECRET_KEY" not in line and "ACCESS_KEY" not in line
+    for line in script.splitlines():
+        assert not line.lstrip().startswith(("source ", ". ")), line
