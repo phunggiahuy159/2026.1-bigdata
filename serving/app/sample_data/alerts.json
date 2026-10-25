@@ -1,0 +1,194 @@
+[
+  {
+    "_id": "hd-demo-xacminh.online|1792845120000",
+    "domain": "hd-demo-xacminh.online",
+    "brand_id": "hdbank",
+    "score": 44,
+    "reasons": [
+      "risky_tld"
+    ],
+    "fqdn": "www.hd-demo-xacminh.online",
+    "alert_ts": 1792845120000,
+    "created_at": "2026-10-24T12:32:00.000Z"
+  },
+  {
+    "_id": "hd-demo-xacminh.online|1792845000000",
+    "domain": "hd-demo-xacminh.online",
+    "brand_id": "hdbank",
+    "score": 47,
+    "reasons": [
+      "risky_tld"
+    ],
+    "fqdn": "hd-demo-xacminh.online",
+    "alert_ts": 1792845000000,
+    "created_at": "2026-10-24T12:30:00.000Z"
+  },
+  {
+    "_id": "sacom-demo-uudai.vn|1792843200000",
+    "domain": "sacom-demo-uudai.vn",
+    "brand_id": "sacombank",
+    "score": 52,
+    "reasons": [
+      "brand_in_domain"
+    ],
+    "fqdn": "sacom-demo-uudai.vn",
+    "alert_ts": 1792843200000,
+    "created_at": "2026-10-24T12:00:00.000Z"
+  },
+  {
+    "_id": "acb-demo-otp.click|1792841520000",
+    "domain": "acb-demo-otp.click",
+    "brand_id": "acb",
+    "score": 55,
+    "reasons": [
+      "risky_tld",
+      "risky_keyword"
+    ],
+    "fqdn": "www.acb-demo-otp.click",
+    "alert_ts": 1792841520000,
+    "created_at": "2026-10-24T11:32:00.000Z"
+  },
+  {
+    "_id": "acb-demo-otp.click|1792841400000",
+    "domain": "acb-demo-otp.click",
+    "brand_id": "acb",
+    "score": 58,
+    "reasons": [
+      "risky_tld",
+      "risky_keyword"
+    ],
+    "fqdn": "acb-demo-otp.click",
+    "alert_ts": 1792841400000,
+    "created_at": "2026-10-24T11:30:00.000Z"
+  },
+  {
+    "_id": "vpb-demo-vay.com.vn|1792839600000",
+    "domain": "vpb-demo-vay.com.vn",
+    "brand_id": "vpbank",
+    "score": 61,
+    "reasons": [
+      "brand_in_domain"
+    ],
+    "fqdn": "vpb-demo-vay.com.vn",
+    "alert_ts": 1792839600000,
+    "created_at": "2026-10-24T11:00:00.000Z"
+  },
+  {
+    "_id": "agri-demo-thuong.xyz|1792837920000",
+    "domain": "agri-demo-thuong.xyz",
+    "brand_id": "agribank",
+    "score": 63,
+    "reasons": [
+      "brand_in_domain",
+      "risky_tld"
+    ],
+    "fqdn": "www.agri-demo-thuong.xyz",
+    "alert_ts": 1792837920000,
+    "created_at": "2026-10-24T10:32:00.000Z"
+  },
+  {
+    "_id": "agri-demo-thuong.xyz|1792837800000",
+    "domain": "agri-demo-thuong.xyz",
+    "brand_id": "agribank",
+    "score": 66,
+    "reasons": [
+      "brand_in_domain",
+      "risky_tld"
+    ],
+    "fqdn": "agri-demo-thuong.xyz",
+    "alert_ts": 1792837800000,
+    "created_at": "2026-10-24T10:30:00.000Z"
+  },
+  {
+    "_id": "mb-demo-nhanqua.vn|1792836000000",
+    "domain": "mb-demo-nhanqua.vn",
+    "brand_id": "mbbank",
+    "score": 69,
+    "reasons": [
+      "brand_in_domain",
+      "risky_keyword"
+    ],
+    "fqdn": "mb-demo-nhanqua.vn",
+    "alert_ts": 1792836000000,
+    "created_at": "2026-10-24T10:00:00.000Z"
+  },
+  {
+    "_id": "xn--demo-bidv-9xa.net|1792834320000",
+    "domain": "xn--demo-bidv-9xa.net",
+    "brand_id": "bidv",
+    "score": 71,
+    "reasons": [
+      "homoglyph",
+      "new_cert"
+    ],
+    "fqdn": "www.xn--demo-bidv-9xa.net",
+    "alert_ts": 1792834320000,
+    "created_at": "2026-10-24T09:32:00.000Z"
+  },
+  {
+    "_id": "xn--demo-bidv-9xa.net|1792834200000",
+    "domain": "xn--demo-bidv-9xa.net",
+    "brand_id": "bidv",
+    "score": 74,
+    "reasons": [
+      "homoglyph",
+      "new_cert"
+    ],
+    "fqdn": "xn--demo-bidv-9xa.net",
+    "alert_ts": 1792834200000,
+    "created_at": "2026-10-24T09:30:00.000Z"
+  },
+  {
+    "_id": "tech-demo-hotro.com|1792832400000",
+    "domain": "tech-demo-hotro.com",
+    "brand_id": "techcombank",
+    "score": 78,
+    "reasons": [
+      "brand_in_domain",
+      "new_cert"
+    ],
+    "fqdn": "tech-demo-hotro.com",
+    "alert_ts": 1792832400000,
+    "created_at": "2026-10-24T09:00:00.000Z"
+  },
+  {
+    "_id": "bank-demo-login.top|1792830720000",
+    "domain": "bank-demo-login.top",
+    "brand_id": "vietcombank",
+    "score": 82,
+    "reasons": [
+      "brand_in_domain",
+      "risky_tld"
+    ],
+    "fqdn": "www.bank-demo-login.top",
+    "alert_ts": 1792830720000,
+    "created_at": "2026-10-24T08:32:00.000Z"
+  },
+  {
+    "_id": "bank-demo-login.top|1792830600000",
+    "domain": "bank-demo-login.top",
+    "brand_id": "vietcombank",
+    "score": 85,
+    "reasons": [
+      "brand_in_domain",
+      "risky_tld"
+    ],
+    "fqdn": "bank-demo-login.top",
+    "alert_ts": 1792830600000,
+    "created_at": "2026-10-24T08:30:00.000Z"
+  },
+  {
+    "_id": "bank-demo-xacthuc.vn|1792828800000",
+    "domain": "bank-demo-xacthuc.vn",
+    "brand_id": "vietcombank",
+    "score": 92,
+    "reasons": [
+      "typosquat",
+      "new_cert",
+      "risky_keyword"
+    ],
+    "fqdn": "bank-demo-xacthuc.vn",
+    "alert_ts": 1792828800000,
+    "created_at": "2026-10-24T08:00:00.000Z"
+  }
+]
