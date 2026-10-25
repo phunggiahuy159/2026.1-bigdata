@@ -18,7 +18,12 @@ from dataclasses import dataclass, field
 ENDPOINT = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 ENV_KEY = "SAFE_BROWSING_API_KEY"
 MAX_ENTRIES_PER_REQUEST = 500  # giới hạn của API
-THREAT_TYPES = ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"]
+THREAT_TYPES = [
+    "MALWARE",
+    "SOCIAL_ENGINEERING",
+    "UNWANTED_SOFTWARE",
+    "POTENTIALLY_HARMFUL_APPLICATION",
+]
 
 # transport(url, body) -> (status, parsed_json)
 Transport = Callable[[str, dict], tuple[int, dict]]

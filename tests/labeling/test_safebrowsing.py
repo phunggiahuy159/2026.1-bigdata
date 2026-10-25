@@ -37,7 +37,16 @@ def test_key_from_env(monkeypatch):
 
 def test_flags_matches_and_keeps_order():
     t = FakeTransport(
-        [(200, {"matches": [{"threatType": "SOCIAL_ENGINEERING", "threat": {"url": "bad.example"}}]})]
+        [
+            (
+                200,
+                {
+                    "matches": [
+                        {"threatType": "SOCIAL_ENGINEERING", "threat": {"url": "bad.example"}}
+                    ]
+                },
+            )
+        ]
     )
     out = make(t).check(["ok.example", "BAD.example", "ok.example"])
     assert [(v.domain, v.flagged, v.threats) for v in out] == [
