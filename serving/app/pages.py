@@ -50,10 +50,11 @@ def domain_page() -> None:
     cols[2].metric(
         "Điểm batch", "chưa chấm" if detail["batch_score"] is None else detail["batch_score"]
     )
-    st.write(f"Thương hiệu: {detail['brand'] or 'không rõ'}")
-    st.write("Lý do: " + ", ".join(detail["reasons"]))
-    st.write(f"Thấy lần đầu (UTC): {detail['first_seen'] or 'không rõ'}")
-    st.write(f"Chiến dịch: {detail['campaign_id'] or 'không thuộc chiến dịch nào'}")
+    # st.text, không phải st.write: markdown có thể tự biến chuỗi giống URL thành link bấm được
+    st.text(f"Thương hiệu: {detail['brand'] or 'không rõ'}")
+    st.text("Lý do: " + ", ".join(detail["reasons"]))
+    st.text(f"Thấy lần đầu (UTC): {detail['first_seen'] or 'không rõ'}")
+    st.text(f"Chiến dịch: {detail['campaign_id'] or 'không thuộc chiến dịch nào'}")
     st.subheader("Enrichment")
     st.json(detail["enrichment"])
 
