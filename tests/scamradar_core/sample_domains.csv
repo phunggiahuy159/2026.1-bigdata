@@ -1,0 +1,51 @@
+domain,brand_id,min_score,max_score,note
+vietcombank[.]com[.]vn,vietcombank,0,0,chính chủ
+www[.]momo[.]vn,momo,0,0,chính chủ có subdomain
+login[.]vietcombank[.]com[.]vn,vietcombank,0,0,subdomain của chính chủ không bị gắn cờ
+vneid[.]gov[.]vn,vneid,0,0,dịch vụ công chính chủ
+dinhdanhdientu[.]gov[.]vn,vneid,0,0,chính chủ thứ hai
+shopee[.]vn,shopee,0,0,chính chủ
+vietcombank[.]com,vietcombank,0,0,other_domains: miễn hẳn
+bidv[.]vn,bidv,0,0,other_domains: miễn hẳn
+momo-khuyenmai[.]top,momo,55,100,tên thương hiệu + từ khoá + TLD rủi ro
+vietcombank-xacthuc[.]top,vietcombank,60,100,thương hiệu + xác thực + TLD rủi ro
+vietcombamk-login[.]xyz,vietcombank,60,100,gõ sai 1 ký tự
+v1etcombank[.]com,vietcombank,45,100,số 1 thay chữ i
+m0mo[.]vn,momo,45,100,số 0 thay chữ o
+rnomo[.]vn,momo,45,100,rn thay m
+momо[.]vn,momo,45,100,chữ о Cyrillic
+vietcombánk[.]vn,vietcombank,45,100,dấu tiếng Việt chèn vào tên
+shopee[.]vn[.]thanh-toan-don[.]top,shopee,45,100,tên thương hiệu nằm ở subdomain
+dangnhap[.]momo[.]vn[.]abc-xyz[.]cc,momo,45,100,subdomain giả đăng nhập
+tpbank-hotro[.]online,tpbank,50,100,hỗ trợ giả
+zalopay-nhanqua[.]click,zalopay,55,100,quà tặng giả
+mbbank-capnhat-taikhoan[.]xyz,mbbank,65,100,nhiều từ khoá
+viettel-khuyenmai-2024[.]vip,viettel,55,100,khuyến mãi nhà mạng
+vneid-xacminh[.]top,vneid,55,100,mạo danh định danh điện tử
+gdt-hoantienthue[.]xyz,thue,45,100,mạo danh thuế (gdt, hoàn tiền thuế)
+baohiemxahoi-nhantien[.]cc,bhxh,45,100,mạo danh BHXH
+ghn-vandon-hoantien[.]top,ghn,40,100,giao vận giả (ghn là token ngắn)
+vnpost-hoantien[.]site,vnpost,55,100,bưu điện giả
+csgt-phatnguoi[.]site,csgt,45,100,mạo danh tra cứu phạt nguội
+tracuuphatnguoi-csgt[.]top,csgt,45,100,mạo danh tra cứu phạt nguội
+xn--vit-nam-zv4c[.]vn,,5,30,IDN không liên quan thương hiệu
+sacombank-login-secure-verify-2024[.]online,sacombank,75,100,nhiều dấu gạch và từ khoá
+techcombankk[.]com,techcombank,40,100,gõ thừa 1 ký tự
+lazadda[.]vn,lazada,40,100,gõ sai
+tikivn[.]top,tiki,35,100,tên ngắn 4 ký tự dạng chuỗi con
+google[.]com,,0,10,benign
+wikipedia[.]org,,0,10,benign
+github[.]com,,0,10,benign
+vnexpress[.]net,,0,10,benign
+tuoitre[.]vn,,0,10,benign
+example[.]com[.]vn,,0,10,benign
+cuahangbanhmi[.]vn,,0,10,benign
+acbconstruction[.]com[.]vn,,0,10,acb là token ngắn nên không khớp chuỗi con
+shopping-centre[.]co[.]uk,,0,10,gần giống nhưng không phải thương hiệu
+nguyenvanan-blog[.]github[.]io,,0,10,tenant dịch vụ lưu trữ benign
+qwertyuiopasdfghjk[.]top,,10,40,chuỗi ngẫu nhiên không thương hiệu
+a1b2c3d4e5f6g7h8[.]xyz,,10,40,toàn số lẫn chữ không thương hiệu
+update-account-secure-login[.]icu,,25,60,từ khoá phishing chung không thương hiệu
+dangnhap-xacthuc-taikhoan[.]cfd,,25,60,từ khoá tiếng Việt không thương hiệu
+my-super-long-domain-name-with-many-hyphens-example[.]com,,5,40,dài nhiều gạch nhưng benign
+paypal[.]com,,0,10,thương hiệu optional mặc định không dùng khi chấm
