@@ -11,7 +11,7 @@ LAKEKEEPER_VERSION := 0.12.0
 help:
 	@echo "render-core    helm template cho Kafka, MinIO, catalog (không đụng cụm)"
 	@echo "storage-dirs   tạo thư mục dữ liệu trên máy chủ (không đụng cụm)"
-	@echo "secrets        tạo K8s Secret từ .env (đụng cụm)"
+	@echo "secrets        tạo K8s Secret từ .env, không ghi đè Secret đã có (đụng cụm)"
 	@echo "deploy-core    cài namespace, storage, Kafka, MinIO, catalog (đụng cụm)"
 
 helm-repos:
@@ -29,25 +29,12 @@ render-core:
 		-f deploy/iceberg-catalog/values.yaml > /dev/null
 
 storage-dirs:
+	mkdir -p $(BIGD_DATA)
+	chmod 0700 $(BIGD_DATA)
 	mkdir -p -m 0777 $(BIGD_DATA)/kafka $(BIGD_DATA)/minio $(BIGD_DATA)/catalog-postgres
 
 secrets:
-	@test -f .env || { echo "thiếu .env (sao chép từ .env.example)"; exit 1; }
-	set -a; . ./.env; set +a; \
-	kubectl create secret generic minio-credentials -n minio \
-		--from-literal=rootUser="$$MINIO_ROOT_USER" \
-		--from-literal=rootPassword="$$MINIO_ROOT_PASSWORD" \
-		--dry-run=client -o yaml | kubectl apply -f -; \
-	kubectl create secret generic catalog-postgres -n iceberg \
-		--from-literal=superuser=postgres \
-		--from-literal=superuser-password="$$POSTGRES_SUPERUSER_PASSWORD" \
-		--from-literal=database="$$POSTGRES_DB" \
-		--from-literal=user="$$POSTGRES_USER" \
-		--from-literal=password="$$POSTGRES_PASSWORD" \
-		--dry-run=client -o yaml | kubectl apply -f -; \
-	kubectl create secret generic catalog-encryption -n iceberg \
-		--from-literal=encryptionKey="$$CATALOG_ENCRYPTION_KEY" \
-		--dry-run=client -o yaml | kubectl apply -f -
+	bash deploy/scripts/create-secrets.sh
 
 deploy-storage: storage-dirs
 	kubectl apply -f deploy/namespaces.yaml
