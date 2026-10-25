@@ -2,8 +2,8 @@
 
 TODO: thay toàn bộ file này bằng `scamradar_core` của P3 (PR #14) khi thư viện được merge.
 Giữ nguyên chữ ký `ToAsciiFn` / `SplitFn` để transform không phải đổi. Quy tắc giữ cùng thư viện
-của P3 để khoá domain hai lớp (batch và speed) khớp nhau: tính cả phần PRIVATE của PSL (`x.github.io` là domain gốc
-riêng), luật Unicode của PSL đổi sang punycode, domain gốc là eTLD+1,
+của P3 để khoá domain hai lớp (batch và speed) khớp nhau: tính cả phần PRIVATE của PSL
+(`x.github.io` là domain gốc riêng), luật Unicode của PSL đổi sang punycode, domain gốc là eTLD+1,
 ASCII punycode, viết thường (xem contracts/iceberg/README.md).
 """
 
