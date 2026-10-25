@@ -91,6 +91,9 @@ def main():
     add("X509LogEntry", ["noserial.fixture-acme.net"], 1, 40, None, sha="b" * 64)
     # tên gốc và wildcard của nó trong cùng một chứng chỉ
     add("X509LogEntry", ["*.both.fixture-acme.com", "both.fixture-acme.com"], 2, 50, "B1")
+    # cert cuối đến muộn 3 ngày sau precert: vẫn phải hợp nhất với dòng precert đã ghi
+    add("PrecertLogEntry", ["late.fixture-acme.com"], 0, 36000, "1A7E")
+    add("X509LogEntry", ["late.fixture-acme.com"], 3, 36000, "1a7e")
     # ngoài khoảng ngày của test
     add("X509LogEntry", ["outside-range.fixture-acme.com"], 6, 10, "0F")
     OUT.parent.mkdir(exist_ok=True)

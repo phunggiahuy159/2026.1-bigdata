@@ -1,16 +1,13 @@
-from datetime import date
+from datetime import UTC, date
 
 import pytest
 from pyspark.sql import functions as F
 
 from jobs.batch_silver.contract import table_columns
-from jobs.batch_silver.transforms import (
-    OUTPUT_COLUMNS,
-    build_cert_domains,
-    merge_cert_domains,
-)
+from jobs.batch_silver.job import compute_updates
+from jobs.batch_silver.transforms import OUTPUT_COLUMNS, build_cert_domains
 
-D0, D1, D2 = date(2026, 10, 20), date(2026, 10, 21), date(2026, 10, 22)
+D0, D1, D2, D3 = (date(2026, 10, d) for d in (20, 21, 22, 23))
 
 
 @pytest.fixture(scope="module")
@@ -84,8 +81,9 @@ def test_precert_and_final_merge_into_one_row(full, bronze):
     assert pairs.count() > 50
     r = pairs.limit(1).collect()[0]
     assert len(r.cert_sha256s) == 2
-    only_pre = full.where(F.col("has_precert") & ~F.col("has_final_cert")).count()
-    assert only_pre == 0  # fixture: mọi precert đều có cert cuối
+    only_pre = full.where(F.col("has_precert") & ~F.col("has_final_cert"))
+    # fixture: mọi precert có cert cuối trong D0..D2, trừ `late` (cert cuối đến ngày D3)
+    assert {r.fqdn for r in only_pre.collect()} == {"late.fixture-acme.com"}
 
 
 def test_duplicate_collectors_are_deduplicated(full):
@@ -136,28 +134,59 @@ def keyed(df):
     return {(r.cert_key, r.fqdn): r.asDict() for r in df.collect()}
 
 
-def apply_day(spark, state, bronze, norm, day):
-    """Mô phỏng MERGE: hợp nhất dòng mới với dòng cũ, thay các dòng bị chạm."""
-    new = build_cert_domains(bronze, norm, day, day)
-    merged = merge_cert_domains(state, new)
-    kept = state.join(merged.select("cert_key", "fqdn"), ["cert_key", "fqdn"], "left_anti")
-    out = kept.unionByName(merged)
+def run_day(spark, silver, bronze, norm, day):
+    """Một lần chạy job cho `day`: đúng đường `run_iceberg` (compute_updates) rồi MERGE.
+
+    MERGE thay cả dòng có cùng (cert_key, fqdn) và chèn dòng mới. `silver` là toàn bộ bảng đích,
+    không lọc, đúng như job đọc.
+    """
+    rows = compute_updates(bronze, silver, norm, day, day)
+    kept = silver.join(rows.select("cert_key", "fqdn"), ["cert_key", "fqdn"], "left_anti")
+    out = kept.unionByName(rows)
     # cắt lineage: bảng silver mẫu nhỏ, đọc về rồi tạo lại như một bảng đã ghi
     return spark.createDataFrame(out.collect(), out.schema)
 
 
-def test_day_by_day_merge_equals_full_run(spark, bronze, norm, full):
-    state = spark.createDataFrame([], full.schema)
-    for day in (D0, D1, D2):
-        state = apply_day(spark, state, bronze, norm, day)
-    got, want = keyed(state), keyed(full)
+def run_days(spark, bronze, norm, schema, days):
+    silver = spark.createDataFrame([], schema)
+    for day in days:
+        silver = run_day(spark, silver, bronze, norm, day)
+    return silver
+
+
+@pytest.fixture(scope="module")
+def full_all(bronze, norm):
+    return build_cert_domains(bronze, norm, D0, D3).cache()
+
+
+def test_day_by_day_equals_single_run(spark, bronze, norm, full_all):
+    silver = run_days(spark, bronze, norm, full_all.schema, (D0, D1, D2, D3))
+    got, want = keyed(silver), keyed(full_all)
     assert got.keys() == want.keys()
     for k in want:
         assert got[k] == want[k], k
 
 
-def test_rerun_same_day_is_idempotent(spark, bronze, norm, full):
-    state = spark.createDataFrame([], full.schema)
-    for day in (D0, D1, D2, D2, D1):  # chạy lại các ngày
-        state = apply_day(spark, state, bronze, norm, day)
-    assert keyed(state) == keyed(full)
+def test_midnight_pair_survives_following_days(spark, bronze, norm, full_all):
+    """Hồi quy: chạy ngày 21, 22, 23. Lần chạy ngày 23 đọc lại bronze ngày 22 (chỉ cert cuối)
+    nhưng không được làm mất cờ precert, sha thứ hai và cert_ts của dòng đã ghi."""
+    silver = spark.createDataFrame([], full_all.schema)
+    seen = []
+    for day in (D1, D2, D3):
+        silver = run_day(spark, silver, bronze, norm, day)
+        r = one(silver, "boundary.fixture-acme.com")
+        seen.append((day, r.has_precert, r.has_final_cert, len(r.cert_sha256s)))
+        assert r.cert_ts.astimezone(UTC).strftime("%Y-%m-%d %H:%M:%S") == "2026-10-21 23:59:58"
+    assert seen == [(D1, True, False, 1), (D2, True, True, 2), (D3, True, True, 2)]
+
+
+def test_final_cert_arriving_days_after_precert_is_merged(spark, bronze, norm, full_all):
+    silver = run_days(spark, bronze, norm, full_all.schema, (D0, D1, D2, D3))
+    r = one(silver, "late.fixture-acme.com")
+    assert r.has_precert and r.has_final_cert and len(r.cert_sha256s) == 2
+    assert r.cert_ts.astimezone(UTC).strftime("%Y-%m-%d") == "2026-10-20"  # ngày của precert
+
+
+def test_rerun_any_day_is_idempotent(spark, bronze, norm, full_all):
+    silver = run_days(spark, bronze, norm, full_all.schema, (D0, D1, D2, D3, D3, D1, D2, D0, D3))
+    assert keyed(silver) == keyed(full_all)

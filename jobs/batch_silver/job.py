@@ -9,22 +9,23 @@ Chạy local trên file mẫu JSON Lines theo schema bronze.ct_certs, ghi Parque
 
 Cấu hình: BRONZE_TABLE, SILVER_TABLE, PSL_PATH. Bắt buộc spark.sql.session.timeZone=UTC
 (contracts/iceberg/README.md).
-Chạy lại một ngày bất kỳ an toàn: đọc theo khoảng ngày, ghi bằng MERGE theo (cert_key, fqdn) với
-phép hợp nhất lặp lại không đổi kết quả (transforms.merge_cert_domains).
+Chạy lại một ngày bất kỳ an toàn: đọc bronze theo khoảng ngày, hợp nhất với dòng đã có trong silver
+theo khoá (cert_key, fqdn), rồi MERGE theo đúng khoá đó (compute_updates). Dòng cũ được đọc
+theo khoá, không theo cửa sổ ngày, nên cert đến muộn vẫn hợp nhất đủ và kết quả không phụ thuộc
+lịch chạy.
 """
 
 from __future__ import annotations
 
 import argparse
 import os
-from datetime import date, timedelta
+from datetime import date
 
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql import functions as F
 
 from jobs.batch_silver.contract import ddl_schema
 from jobs.batch_silver.normalize import Normalizer, default_normalizer
-from jobs.batch_silver.transforms import LOOKBACK_DAYS, build_cert_domains, merge_cert_domains
+from jobs.batch_silver.transforms import build_cert_domains, merge_cert_domains
 
 BRONZE_TABLE = os.environ.get("BRONZE_TABLE", "bronze.ct_certs")
 SILVER_TABLE = os.environ.get("SILVER_TABLE", "silver.cert_domains")
@@ -36,24 +37,38 @@ def read_bronze_json(spark: SparkSession, path: str) -> DataFrame:
 
 
 def merge_into_silver(spark: SparkSession, rows: DataFrame, table: str) -> None:
-    """MERGE INTO theo (cert_key, fqdn); `rows` đã hợp nhất với dòng cũ nên thay cả dòng."""
+    """MERGE INTO theo khoá hạt (cert_key, fqdn) của contract.
+
+    `rows` đã hợp nhất với dòng cũ (compute_updates) nên thay cả dòng là đúng.
+    """
     rows.createOrReplaceTempView("cert_domains_updates")
     spark.sql(
         f"""
         MERGE INTO {table} t
         USING cert_domains_updates s
-        ON t.cert_key = s.cert_key AND t.fqdn = s.fqdn AND t.registered_domain = s.registered_domain
+        ON t.cert_key = s.cert_key AND t.fqdn = s.fqdn
         WHEN MATCHED THEN UPDATE SET *
         WHEN NOT MATCHED THEN INSERT *
         """
     )
 
 
+def compute_updates(
+    bronze: DataFrame, silver: DataFrame, norm: Normalizer, start: date, end: date
+) -> DataFrame:
+    """Các dòng cần MERGE vào silver cho khoảng ngày [start, end].
+
+    `silver` là toàn bộ bảng đích, không lọc theo ngày: `merge_cert_domains` chỉ lấy dòng có khoá
+    trùng với dòng mới. Lọc theo cert_ts sẽ bỏ sót dòng cũ và MERGE ghi đè mất dữ liệu đã có.
+    """
+    return merge_cert_domains(silver, build_cert_domains(bronze, norm, start, end))
+
+
 def run_iceberg(spark: SparkSession, start: date, end: date, norm: Normalizer) -> None:
-    new = build_cert_domains(spark.read.table(BRONZE_TABLE), norm, start, end)
-    lo = F.lit(start - timedelta(days=LOOKBACK_DAYS)).cast("timestamp")
-    existing = spark.read.table(SILVER_TABLE).where(F.col("cert_ts") >= lo)
-    merge_into_silver(spark, merge_cert_domains(existing, new), SILVER_TABLE)
+    rows = compute_updates(
+        spark.read.table(BRONZE_TABLE), spark.read.table(SILVER_TABLE), norm, start, end
+    )
+    merge_into_silver(spark, rows, SILVER_TABLE)
 
 
 def run_local(

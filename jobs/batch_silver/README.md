@@ -4,14 +4,21 @@
 
 Các bước (`transforms.py`, mỗi bước nhận và trả DataFrame): lọc theo khoảng ngày UTC trên `seen_ts`
 -> `cert_key` (`issuer_cn|SERIAL`, thiếu serial thì `sha256:<sha256>`) -> tách từng tên trong `all_domains`
-(viết thường, bỏ dấu chấm cuối, bỏ `*.`) -> punycode -> loại IP/tên không hợp lệ -> tách eTLD+1 theo PSL
+(viết thường, bỏ dấu chấm cuối, bỏ `*.`) -> punycode -> loại IP/tên không hợp lệ -> tách eTLD+1 theo PSL (gồm cả phần PRIVATE như `scamradar_core`:
+`x.github.io` là domain gốc riêng)
 -> gộp precert/cert và khử trùng theo `(cert_key, fqdn)`.
 
 ## Ghi chạy lại được
 
-- Đọc bronze lùi 1 ngày (`LOOKBACK_DAYS`) so với khoảng chạy, để precert ngày D và cert cuối ngày D+1 vẫn gộp.
-- `merge_cert_domains` hợp nhất dòng mới với dòng đã có (cờ OR, hợp tập sha, `cert_ts` nhỏ nhất); phép này lặp lại không đổi kết quả.
-- Ghi bằng `MERGE INTO` theo `(cert_key, fqdn)`, không ghi đè partition. Cert đến muộn hơn 1 ngày sau precert không được gộp.
+- Đọc bronze lùi 1 ngày (`LOOKBACK_DAYS`) so với khoảng chạy, để precert ngày D và cert cuối ngày D+1 gộp ngay trong một lần chạy.
+- `compute_updates` đọc dòng đã có trong silver **theo khoá** của dòng mới (không lọc theo ngày) và `merge_cert_domains`
+  hợp nhất: cờ OR, hợp tập sha, `cert_ts` nhỏ nhất, `last_seen_ts` lớn nhất. Phép này lặp lại không đổi kết quả.
+- Ghi bằng `MERGE INTO ... ON t.cert_key = s.cert_key AND t.fqdn = s.fqdn` (đúng khoá hạt của contract), thay cả dòng
+  vì dòng ghi đã là kết quả hợp nhất. Kết quả không phụ thuộc lịch chạy: chạy từng ngày, chạy lại một ngày hay chạy cả khoảng
+  đều cho cùng bảng (có test hồi quy mô phỏng `run_iceberg` qua nhiều ngày).
+- Cert cuối đến muộn bao lâu sau precert cũng gộp vào dòng precert đã ghi, miễn precert đã vào silver. Nếu precert chưa từng vào silver
+  thì dòng chỉ có `has_final_cert`, và sẽ được hợp nhất khi precert tới.
+- Chi phí: đọc dòng cũ theo khoá là semi-join với bảng silver (không cắt được theo ngày). Chấp nhận ở quy mô hiện tại; đo khi có dữ liệu thật.
 
 ## Chạy local trên file mẫu
 
