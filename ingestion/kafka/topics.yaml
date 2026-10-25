@@ -1,0 +1,46 @@
+# kubectl apply -f ingestion/kafka/topics.yaml  (sau khi deploy/kafka/kafka-cluster.yaml chạy; P1 apply lúc cài)
+# Cluster bigd-kafka, namespace kafka, 1 broker nên replicas 1. Partition, retention, nén theo contracts/kafka/README.md.
+# retention.ms: 48 giờ = 172800000, 7 ngày = 604800000. Nén zstd đặt ở mức topic (broker để compression.type=producer).
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: ct.raw
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: bigd-kafka
+spec:
+  partitions: 6
+  replicas: 1
+  config:
+    retention.ms: 172800000
+    compression.type: zstd
+---
+# Contract ghi "theo mặc định" cho ct.dlq: dùng num.partitions của broker (6).
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: ct.dlq
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: bigd-kafka
+spec:
+  partitions: 6
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    compression.type: zstd
+---
+# P3 ghi alerts.v1; manifest nằm cùng file để P1 apply một lần.
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: alerts.v1
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: bigd-kafka
+spec:
+  partitions: 3
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    compression.type: zstd
