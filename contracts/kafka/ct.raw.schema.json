@@ -75,7 +75,8 @@
     },
     "extensions": {
       "type": ["object", "null"],
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": { "type": ["string", "boolean"] },
+      "description": "Giá trị là chuỗi, trừ cờ như ctlPoisonByte (true) ở precert."
     }
   },
   "$defs": {

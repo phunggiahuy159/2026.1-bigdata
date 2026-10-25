@@ -1,0 +1,215 @@
+[
+ {
+  "message_type": "certificate_update",
+  "data": {
+   "update_type": "X509LogEntry",
+   "leaf_cert": {
+    "subject": {
+     "CN": "www.example.com",
+     "aggregated": "/CN=www.example.com"
+    },
+    "issuer": {
+     "C": "US",
+     "CN": "Example CA",
+     "O": "Example Trust",
+     "aggregated": "/C=US/CN=Example CA/O=Example Trust"
+    },
+    "serial_number": "00000000000000000000000000000001",
+    "not_before": 1792827253,
+    "not_after": 1800603252,
+    "fingerprint": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha1": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha256": "01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01:01",
+    "signature_algorithm": "sha256, rsa",
+    "is_ca": false,
+    "all_domains": [
+     "www.example.com"
+    ],
+    "extensions": {
+     "basicConstraints": "CA:FALSE",
+     "subjectAltName": "DNS:www.example.com"
+    }
+   },
+   "cert_index": 1000,
+   "cert_link": "https://ct.example.test/tile/data/000/0",
+   "seen": 1792830766.506,
+   "submission_timestamp": 1792830764.088,
+   "source": {
+    "name": "Example Log 2027",
+    "url": "https://ct.example.test/2027"
+   }
+  }
+ },
+ {
+  "message_type": "certificate_update",
+  "data": {
+   "update_type": "PrecertLogEntry",
+   "leaf_cert": {
+    "subject": {
+     "CN": "example.org",
+     "aggregated": "/CN=example.org"
+    },
+    "issuer": {
+     "C": "US",
+     "CN": "Example CA",
+     "O": "Example Trust",
+     "aggregated": "/C=US/CN=Example CA/O=Example Trust"
+    },
+    "serial_number": "00000000000000000000000000000002",
+    "not_before": 1792827253,
+    "not_after": 1800603252,
+    "fingerprint": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha1": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha256": "02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02:02",
+    "signature_algorithm": "sha256, rsa",
+    "is_ca": false,
+    "all_domains": [
+     "example.org",
+     "*.example.org"
+    ],
+    "extensions": {
+     "basicConstraints": "CA:FALSE",
+     "subjectAltName": "DNS:example.org, DNS:*.example.org",
+     "ctlPoisonByte": true
+    }
+   },
+   "cert_index": 1001,
+   "cert_link": "https://ct.example.test/tile/data/000/1",
+   "seen": 1792830767.506,
+   "submission_timestamp": 1792830765.088,
+   "source": {
+    "name": "Example Log 2027",
+    "url": "https://ct.example.test/2027"
+   }
+  }
+ },
+ {
+  "message_type": "certificate_update",
+  "data": {
+   "update_type": "X509LogEntry",
+   "leaf_cert": {
+    "subject": {
+     "CN": "hxxps-momo-xacthuc.example.vn",
+     "aggregated": "/CN=hxxps-momo-xacthuc.example.vn"
+    },
+    "issuer": {
+     "C": "US",
+     "CN": "Example CA",
+     "O": "Example Trust",
+     "aggregated": "/C=US/CN=Example CA/O=Example Trust"
+    },
+    "serial_number": "00000000000000000000000000000003",
+    "not_before": 1792827253,
+    "not_after": 1800603252,
+    "fingerprint": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha1": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha256": "03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03",
+    "signature_algorithm": "sha256, rsa",
+    "is_ca": false,
+    "all_domains": [
+     "hxxps-momo-xacthuc.example.vn"
+    ],
+    "extensions": {
+     "basicConstraints": "CA:FALSE",
+     "subjectAltName": "DNS:hxxps-momo-xacthuc.example.vn"
+    }
+   },
+   "cert_index": 1002,
+   "cert_link": "https://ct.example.test/tile/data/000/2",
+   "seen": 1792830768.506,
+   "submission_timestamp": 1792830766.088,
+   "source": {
+    "name": "Example Log 2027",
+    "url": "https://ct.example.test/2027"
+   }
+  }
+ },
+ {
+  "message_type": "certificate_update",
+  "data": {
+   "update_type": "PrecertLogEntry",
+   "leaf_cert": {
+    "subject": {
+     "CN": "a.example.com.vn",
+     "aggregated": "/CN=a.example.com.vn"
+    },
+    "issuer": {
+     "C": "US",
+     "CN": "Example CA",
+     "O": "Example Trust",
+     "aggregated": "/C=US/CN=Example CA/O=Example Trust"
+    },
+    "serial_number": "00000000000000000000000000000004",
+    "not_before": 1792827253,
+    "not_after": 1800603252,
+    "fingerprint": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha1": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha256": "04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04:04",
+    "signature_algorithm": "sha256, rsa",
+    "is_ca": false,
+    "all_domains": [
+     "a.example.com.vn",
+     "b.example.com.vn",
+     "c.example.com.vn"
+    ],
+    "extensions": {
+     "basicConstraints": "CA:FALSE",
+     "subjectAltName": "DNS:a.example.com.vn, DNS:b.example.com.vn, DNS:c.example.com.vn",
+     "ctlPoisonByte": true
+    }
+   },
+   "cert_index": 1003,
+   "cert_link": "https://ct.example.test/tile/data/000/3",
+   "seen": 1792830769.506,
+   "submission_timestamp": 1792830767.088,
+   "source": {
+    "name": "Example Log 2027",
+    "url": "https://ct.example.test/2027"
+   }
+  }
+ },
+ {
+  "message_type": "certificate_update",
+  "data": {
+   "update_type": "X509LogEntry",
+   "leaf_cert": {
+    "subject": {
+     "CN": "xn--bnh-example.example.net",
+     "aggregated": "/CN=xn--bnh-example.example.net"
+    },
+    "issuer": {
+     "C": "US",
+     "CN": "Example CA",
+     "O": "Example Trust",
+     "aggregated": "/C=US/CN=Example CA/O=Example Trust"
+    },
+    "serial_number": "00000000000000000000000000000005",
+    "not_before": 1792827253,
+    "not_after": 1800603252,
+    "fingerprint": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha1": "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB",
+    "sha256": "05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05:05",
+    "signature_algorithm": "sha256, rsa",
+    "is_ca": false,
+    "all_domains": [
+     "xn--bnh-example.example.net"
+    ],
+    "extensions": {
+     "basicConstraints": "CA:FALSE",
+     "subjectAltName": "DNS:xn--bnh-example.example.net"
+    }
+   },
+   "cert_index": 1004,
+   "cert_link": "https://ct.example.test/tile/data/000/4",
+   "seen": 1792830770.506,
+   "submission_timestamp": 1792830768.088,
+   "source": {
+    "name": "Example Log 2027",
+    "url": "https://ct.example.test/2027"
+   }
+  }
+ },
+ {
+  "message_type": "heartbeat"
+ }
+]
