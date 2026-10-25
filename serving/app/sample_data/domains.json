@@ -1,0 +1,396 @@
+[
+  {
+    "_id": "bank-demo-xacthuc.vn",
+    "brand_id": "vietcombank",
+    "speed": {
+      "score": 92,
+      "reasons": [
+        "typosquat",
+        "new_cert",
+        "risky_keyword"
+      ],
+      "first_seen_ts": 1792828740000,
+      "last_seen_ts": 1792828800000,
+      "cert_count": 1,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792828800000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 95,
+      "reasons": [
+        "typosquat",
+        "new_cert",
+        "risky_keyword",
+        "asn_cluster"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792832400000,
+      "campaign_id": "camp-demo-1",
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792829400000,
+        "a_records": [
+          "192.0.2.10"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64500
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "bank-demo-login.top",
+    "brand_id": "vietcombank",
+    "speed": {
+      "score": 85,
+      "reasons": [
+        "brand_in_domain",
+        "risky_tld"
+      ],
+      "first_seen_ts": 1792830540000,
+      "last_seen_ts": 1792830600000,
+      "cert_count": 2,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792830600000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 88,
+      "reasons": [
+        "brand_in_domain",
+        "risky_tld",
+        "asn_cluster"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792834200000,
+      "campaign_id": "camp-demo-1",
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792831200000,
+        "a_records": [
+          "192.0.2.11"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64501
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "US"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "tech-demo-hotro.com",
+    "brand_id": "techcombank",
+    "speed": {
+      "score": 78,
+      "reasons": [
+        "brand_in_domain",
+        "new_cert"
+      ],
+      "first_seen_ts": 1792832340000,
+      "last_seen_ts": 1792832400000,
+      "cert_count": 3,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792832400000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 81,
+      "reasons": [
+        "brand_in_domain",
+        "new_cert",
+        "asn_cluster"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792836000000,
+      "campaign_id": "camp-demo-1",
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792833000000,
+        "a_records": [
+          "192.0.2.12"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64502
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "xn--demo-bidv-9xa.net",
+    "brand_id": "bidv",
+    "speed": {
+      "score": 74,
+      "reasons": [
+        "homoglyph",
+        "new_cert"
+      ],
+      "first_seen_ts": 1792834140000,
+      "last_seen_ts": 1792834200000,
+      "cert_count": 1,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792834200000
+    }
+  },
+  {
+    "_id": "mb-demo-nhanqua.vn",
+    "brand_id": "mbbank",
+    "speed": {
+      "score": 69,
+      "reasons": [
+        "brand_in_domain",
+        "risky_keyword"
+      ],
+      "first_seen_ts": 1792835940000,
+      "last_seen_ts": 1792836000000,
+      "cert_count": 2,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792836000000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 72,
+      "reasons": [
+        "brand_in_domain",
+        "risky_keyword"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792839600000,
+      "campaign_id": null,
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792836600000,
+        "a_records": [
+          "192.0.2.14"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64504
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "agri-demo-thuong.xyz",
+    "brand_id": "agribank",
+    "speed": {
+      "score": 66,
+      "reasons": [
+        "brand_in_domain",
+        "risky_tld"
+      ],
+      "first_seen_ts": 1792837740000,
+      "last_seen_ts": 1792837800000,
+      "cert_count": 3,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792837800000
+    }
+  },
+  {
+    "_id": "vpb-demo-vay.com.vn",
+    "brand_id": "vpbank",
+    "speed": {
+      "score": 61,
+      "reasons": [
+        "brand_in_domain"
+      ],
+      "first_seen_ts": 1792839540000,
+      "last_seen_ts": 1792839600000,
+      "cert_count": 1,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792839600000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 58,
+      "reasons": [
+        "brand_in_domain"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792843200000,
+      "campaign_id": null,
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792840200000,
+        "a_records": [
+          "192.0.2.16"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64506
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "acb-demo-otp.click",
+    "brand_id": "acb",
+    "speed": {
+      "score": 58,
+      "reasons": [
+        "risky_tld",
+        "risky_keyword"
+      ],
+      "first_seen_ts": 1792841340000,
+      "last_seen_ts": 1792841400000,
+      "cert_count": 2,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792841400000
+    }
+  },
+  {
+    "_id": "sacom-demo-uudai.vn",
+    "brand_id": "sacombank",
+    "speed": {
+      "score": 52,
+      "reasons": [
+        "brand_in_domain"
+      ],
+      "first_seen_ts": 1792843140000,
+      "last_seen_ts": 1792843200000,
+      "cert_count": 3,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792843200000
+    },
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 49,
+      "reasons": [
+        "brand_in_domain"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1792846800000,
+      "campaign_id": null,
+      "anomaly_cluster": null,
+      "enrichment": {
+        "lookup_ts": 1792843800000,
+        "a_records": [
+          "192.0.2.18"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example",
+          "ns2.demo-host.example"
+        ],
+        "asn": [
+          64508
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  },
+  {
+    "_id": "hd-demo-xacminh.online",
+    "brand_id": "hdbank",
+    "speed": {
+      "score": 47,
+      "reasons": [
+        "risky_tld"
+      ],
+      "first_seen_ts": 1792844940000,
+      "last_seen_ts": 1792845000000,
+      "cert_count": 1,
+      "rule_version": "rules-0.1",
+      "updated_ts": 1792845000000
+    }
+  },
+  {
+    "_id": "batch-only-demo.vn",
+    "brand_id": "vpbank",
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 70,
+      "reasons": [
+        "brand_in_domain",
+        "asn_cluster"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1761292800000,
+      "campaign_id": null,
+      "anomaly_cluster": 3,
+      "enrichment": {
+        "lookup_ts": 1761292200000,
+        "a_records": [
+          "192.0.2.99"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example"
+        ],
+        "asn": [
+          64500
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
+  }
+]

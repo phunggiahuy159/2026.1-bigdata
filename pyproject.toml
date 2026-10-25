@@ -23,7 +23,7 @@ default-groups = ["dev"]
 # hỏng mọi lệnh uv của cả nhóm. Vai nào thêm module thì thêm pyproject.toml và dòng
 # tương ứng vào `members` trong cùng một PR (xem docs/onboarding.md).
 [tool.uv.workspace]
-members = ["ingestion", "jobs/batch_silver", "labeling", "libs/scamradar_core"]
+members = ["ingestion", "jobs/batch_silver", "labeling", "libs/scamradar_core", "serving"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
