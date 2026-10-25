@@ -6,13 +6,14 @@ MINIO_VERSION := 5.4.0
 LAKEKEEPER_VERSION := 0.12.0
 
 .PHONY: help helm-repos render-core storage-dirs secrets deploy-storage deploy-kafka deploy-minio \
-	deploy-catalog deploy-core
+	deploy-catalog deploy-topics deploy-core
 
 help:
 	@echo "render-core    helm template cho Kafka, MinIO, catalog (không đụng cụm)"
 	@echo "storage-dirs   tạo thư mục dữ liệu trên máy chủ (không đụng cụm)"
 	@echo "secrets        tạo K8s Secret từ .env, không ghi đè Secret đã có (đụng cụm)"
-	@echo "deploy-core    cài namespace, storage, Kafka, MinIO, catalog (đụng cụm)"
+	@echo "deploy-topics  tạo KafkaTopic ct.raw, ct.dlq, alerts.v1 (đụng cụm)"
+	@echo "deploy-core    cài namespace, storage, Kafka, MinIO, catalog, topic (đụng cụm)"
 
 helm-repos:
 	helm repo add strimzi https://strimzi.io/charts/
@@ -54,4 +55,9 @@ deploy-catalog:
 	helm upgrade --install iceberg-catalog lakekeeper/lakekeeper --version $(LAKEKEEPER_VERSION) \
 		-n iceberg -f deploy/iceberg-catalog/values.yaml --wait --timeout 10m
 
-deploy-core: deploy-storage secrets deploy-kafka deploy-minio deploy-catalog
+deploy-topics:
+	kubectl apply -f ingestion/kafka/topics.yaml
+	kubectl wait kafkatopic/ct.raw kafkatopic/ct.dlq kafkatopic/alerts.v1 -n kafka \
+		--for=condition=Ready --timeout=2m
+
+deploy-core: deploy-storage secrets deploy-kafka deploy-minio deploy-catalog deploy-topics
