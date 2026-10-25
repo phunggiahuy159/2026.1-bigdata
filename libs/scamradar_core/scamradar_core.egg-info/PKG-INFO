@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: scamradar-core
+Version: 0.1.0
+Summary: Chuẩn hoá domain và chấm điểm nghi mạo danh thương hiệu Việt, dùng chung cho stream và batch
+Requires-Python: <3.12,>=3.11
+Requires-Dist: pyyaml<7,>=6

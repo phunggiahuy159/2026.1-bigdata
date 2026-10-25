@@ -1,0 +1,6 @@
+pyproject.toml
+scamradar_core.egg-info/PKG-INFO
+scamradar_core.egg-info/SOURCES.txt
+scamradar_core.egg-info/dependency_links.txt
+scamradar_core.egg-info/requires.txt
+scamradar_core.egg-info/top_level.txt

@@ -1,0 +1,6 @@
+[project]
+name = "labeling"
+version = "0.1.0"
+description = "Công cụ tạo nhãn domain: Safe Browsing, quy tắc gán tay"
+requires-python = ">=3.11,<3.12"
+dependencies = []
