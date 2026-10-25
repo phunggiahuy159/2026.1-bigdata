@@ -8,15 +8,17 @@ from pathlib import Path
 import pytest
 
 SCRIPT = Path(__file__).resolve().parents[2] / "deploy/scripts/create-secrets.sh"
-ENV_VALUES = {
-    "MINIO_ROOT_USER": "minioadmin1",
-    "MINIO_ROOT_PASSWORD": "S3cretMinio!x9",
-    "POSTGRES_DB": "iceberg_catalog",
-    "POSTGRES_USER": "iceberg",
-    "POSTGRES_PASSWORD": "PgPass-7777",
-    "POSTGRES_SUPERUSER_PASSWORD": "PgRoot-8888",
-    "CATALOG_ENCRYPTION_KEY": "EncKey-123456789",
-}
+NAMES = (
+    "MINIO_ROOT_USER",
+    "MINIO_ROOT_PASSWORD",
+    "POSTGRES_DB",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_SUPERUSER_PASSWORD",
+    "CATALOG_ENCRYPTION_KEY",
+)
+# giá trị sinh từ tên biến, không có chuỗi giống khoá thật trong mã nguồn
+ENV_VALUES = {name: f"fake-{name.lower().replace('_', '-')}-v1" for name in NAMES}
 
 FAKE_KUBECTL = """#!/usr/bin/env bash
 echo "$@" >> "$FAKE_LOG"
@@ -79,7 +81,7 @@ def test_creates_three_secrets_with_private_temp_files(sandbox):
         "catalog-encryption",
     ]
     assert set(read["modes"].split()) == {"600"}
-    assert "rootPassword=S3cretMinio!x9" in read["capture"]
+    assert f"rootPassword={ENV_VALUES['MINIO_ROOT_PASSWORD']}" in read["capture"]
     for path in read["files"].split():
         assert not Path(path).exists(), "file tạm phải bị xoá"
 
@@ -99,7 +101,7 @@ def test_existing_secret_is_not_overwritten(sandbox):
     created = [line.split()[3] for line in read["log"].splitlines() if line.startswith("create")]
     assert created == ["minio-credentials"]
     assert "bỏ qua" in result.stdout
-    assert "EncKey-123456789" not in read["capture"]
+    assert ENV_VALUES["CATALOG_ENCRYPTION_KEY"] not in read["capture"]
 
 
 @pytest.mark.parametrize(
