@@ -52,3 +52,36 @@ def test_no_page_shows_a_clickable_link():
     for name in ("feed_page", "domain_page", "vn_page"):
         shown = shown_text(run_page(name))
         assert not any("http://" in s or "https://" in s for s in shown), name
+
+
+def _empty_script(name):
+    from serving.app import pages
+
+    class Empty:
+        def alerts(self):
+            return []
+
+        def domains(self):
+            return []
+
+    original = pages.repository
+    pages.repository = lambda: Empty()
+    try:
+        getattr(pages, name)()
+    finally:
+        pages.repository = original
+
+
+def test_pages_survive_empty_data():
+    for name in ("feed_page", "domain_page", "vn_page"):
+        at = AppTest.from_function(_empty_script, args=(name,), default_timeout=30).run()
+        assert not at.exception, name
+
+
+def test_domain_page_handles_batch_only_document():
+    at = run_page("domain_page")
+    box = at.selectbox[0]
+    label = next(o for o in box.options if "batch-only-demo" in o.replace("[.]", "."))
+    at = box.select(label).run()
+    assert not at.exception
+    assert at.metric[1].value == "chưa có"

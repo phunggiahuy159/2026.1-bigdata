@@ -32,6 +32,7 @@ def domain_options(domains: list[Doc]) -> dict[str, str]:
 
 def domain_detail(doc: Doc) -> dict:
     score, reasons, source = effective(doc)
+    speed = doc.get("speed") or {}
     batch = doc.get("batch") or {}
     enrichment = batch.get("enrichment") or {}
     return {
@@ -40,11 +41,9 @@ def domain_detail(doc: Doc) -> dict:
         "score": score,
         "source": source,
         "reasons": reasons,
-        "speed_score": doc["speed"]["score"],
+        "speed_score": speed.get("score"),
         "batch_score": batch.get("score"),
-        "first_seen": fmt_ts(doc["speed"]["first_seen_ts"])
-        if "first_seen_ts" in doc["speed"]
-        else "",
+        "first_seen": fmt_ts(speed["first_seen_ts"]) if "first_seen_ts" in speed else "",
         "campaign_id": batch.get("campaign_id"),
         "enrichment": {
             "ips": [*enrichment.get("a_records", []), *enrichment.get("aaaa_records", [])],

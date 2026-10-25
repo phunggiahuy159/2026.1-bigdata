@@ -356,5 +356,41 @@
       "rule_version": "rules-0.1",
       "updated_ts": 1792845000000
     }
+  },
+  {
+    "_id": "batch-only-demo.vn",
+    "brand_id": "vpbank",
+    "batch": {
+      "score_date": "2026-10-24",
+      "score": 70,
+      "reasons": [
+        "brand_in_domain",
+        "asn_cluster"
+      ],
+      "model_version": "demo-0",
+      "scored_ts": 1761292800000,
+      "campaign_id": null,
+      "anomaly_cluster": 3,
+      "enrichment": {
+        "lookup_ts": 1761292200000,
+        "a_records": [
+          "192.0.2.99"
+        ],
+        "aaaa_records": [],
+        "ns_records": [
+          "ns1.demo-host.example"
+        ],
+        "asn": [
+          64500
+        ],
+        "asn_org": [
+          "DEMO-HOSTING"
+        ],
+        "country": [
+          "SG"
+        ],
+        "dns_status": "ok"
+      }
+    }
   }
 ]

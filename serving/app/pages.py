@@ -31,13 +31,22 @@ def domain_page() -> None:
     st.caption(NOTE)
     domains = repository().domains()
     options = domain_options(domains)
+    if not options:
+        st.info("Chưa có domain nào.")
+        return
     choice = st.selectbox("Domain", list(options))
     doc = next(d for d in domains if d["_id"] == options[choice])
     detail = domain_detail(doc)
     st.subheader(detail["domain"])
     cols = st.columns(3)
-    cols[0].metric("Điểm hiệu lực", detail["score"], help=f"nguồn: {detail['source']}")
-    cols[1].metric("Điểm speed", detail["speed_score"])
+    cols[0].metric(
+        "Điểm hiệu lực",
+        "chưa chấm" if detail["source"] == "none" else detail["score"],
+        help=f"nguồn: {detail['source']}",
+    )
+    cols[1].metric(
+        "Điểm speed", "chưa có" if detail["speed_score"] is None else detail["speed_score"]
+    )
     cols[2].metric(
         "Điểm batch", "chưa chấm" if detail["batch_score"] is None else detail["batch_score"]
     )

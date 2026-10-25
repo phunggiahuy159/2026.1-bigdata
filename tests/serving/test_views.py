@@ -1,6 +1,6 @@
 import re
 
-from serving.app.data import SampleRepository
+from serving.app.data import SampleRepository, effective
 from serving.app.views import domain_detail, domain_options, feed_rows, vn_rows
 
 REPO = SampleRepository()
@@ -56,3 +56,31 @@ def test_detail_without_batch_marks_unscored():
     detail = domain_detail(doc)
     assert detail["source"] == "speed" and detail["batch_score"] is None
     assert detail["enrichment"]["ips"] == []
+
+
+BATCH_ONLY = next(d for d in REPO.domains() if d["_id"] == "batch-only-demo.vn")
+EMPTY = {"_id": "empty.example"}
+
+
+def test_batch_only_document_does_not_crash_any_view():
+    assert "speed" not in BATCH_ONLY
+    detail = domain_detail(BATCH_ONLY)
+    assert detail["source"] == "batch" and detail["score"] == 70
+    assert detail["speed_score"] is None and detail["first_seen"] == ""
+    assert any(r["Nguồn điểm"] == "batch" for r in vn_rows([BATCH_ONLY]))
+    assert len(domain_options([BATCH_ONLY])) == 1
+
+
+def test_document_with_only_id_is_handled():
+    assert effective(EMPTY) == (0, [], "none")
+    detail = domain_detail(EMPTY)
+    assert detail["source"] == "none" and detail["batch_score"] is None
+    assert detail["enrichment"]["ips"] == []
+    assert len(domain_options([EMPTY])) == 1
+
+
+def test_speed_only_document_has_no_batch_score():
+    doc = {"_id": "speed-only.example", "speed": {"score": 40, "reasons": ["x"], "updated_ts": 1}}
+    detail = domain_detail(doc)
+    assert detail["source"] == "speed" and detail["batch_score"] is None
+    assert detail["first_seen"] == ""

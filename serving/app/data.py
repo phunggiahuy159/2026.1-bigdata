@@ -40,13 +40,17 @@ class SampleRepository:
 def effective(domain_doc: Doc) -> tuple[int, list[str], str]:
     """Điểm hiệu lực theo quy tắc hợp nhất: batch ghi đè speed khi có.
 
-    Trả về (score, reasons, nguồn) với nguồn là `batch` hoặc `speed`.
+    Trả về (score, reasons, nguồn) với nguồn là `batch`, `speed` hoặc `none`. Contract chỉ bắt
+    buộc `_id`, nên document có thể chỉ có `batch` (domain chưa từng có cảnh báo speed), chỉ có
+    `speed`, hoặc chưa có cả hai (nguồn `none`, điểm 0).
     """
     batch = domain_doc.get("batch")
     if batch:
         return batch["score"], batch["reasons"], "batch"
-    speed = domain_doc["speed"]
-    return speed["score"], speed["reasons"], "speed"
+    speed = domain_doc.get("speed")
+    if speed:
+        return speed["score"], speed["reasons"], "speed"
+    return 0, [], "none"
 
 
 def is_vn(domain: str) -> bool:
