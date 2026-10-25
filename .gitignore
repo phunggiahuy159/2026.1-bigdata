@@ -32,6 +32,7 @@ __pycache__/
 .ipynb_checkpoints/
 dist/
 build/
+*.egg-info/
 
 # cá nhân
 .DS_Store

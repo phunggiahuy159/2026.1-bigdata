@@ -133,3 +133,32 @@ def test_third_party_minio_images_are_pinned_by_digest():
     assert len(images) == 2
     for image in images:
         assert re.search(r"@sha256:[0-9a-f]{64}$", image), image
+
+
+def test_catalog_migration_is_not_a_post_install_hook():
+    values = yaml.safe_load((DEPLOY / "iceberg-catalog/values.yaml").read_text())
+    assert values["helmWait"] is True
+
+
+def test_deploy_topics_target_applies_all_contract_topics():
+    makefile = (ROOT / "Makefile").read_text()
+    target = makefile.split("deploy-topics:\n", 1)[1].split("\n\n", 1)[0]
+    assert "ingestion/kafka/topics.yaml" in target
+    topics = [d["metadata"]["name"] for d in _load_all(ROOT / "ingestion/kafka/topics.yaml")]
+    for topic in topics:
+        assert f"kafkatopic/{topic}" in target
+    assert "deploy-topics" in makefile.split("deploy-core:", 1)[1].splitlines()[0]
+
+
+def test_gitignore_covers_egg_info():
+    assert "*.egg-info/" in (ROOT / ".gitignore").read_text().splitlines()
+
+
+def test_bootstrap_script_keeps_s3_keys_out_of_argv():
+    script = (DEPLOY / "scripts/bootstrap-catalog.sh").read_text()
+    assert "--data @" in script
+    for line in script.splitlines():
+        if line.lstrip().startswith("curl"):
+            assert "SECRET_KEY" not in line and "ACCESS_KEY" not in line
+    for line in script.splitlines():
+        assert not line.lstrip().startswith(("source ", ". ")), line
